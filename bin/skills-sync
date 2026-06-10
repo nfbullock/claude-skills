@@ -125,12 +125,50 @@ def apply_manifest(desired, adopt):
     return linked, removed, warnings
 
 
+def skill_of(path):
+    parts = path.split("/")
+    return parts[1] if parts[0] == "skills" and len(parts) > 1 else path
+
+
+def drift_report():
+    """Per-skill view of uncommitted local edits, plus conflict risk: does
+    the upstream also touch a skill that's dirty here? Git's own content
+    hashes do the comparison; this just narrates them per skill."""
+    out = subprocess.run(
+        ["git", "-C", REPO, "status", "--porcelain"], capture_output=True, text=True
+    ).stdout
+    dirty = {}
+    for line in out.splitlines():
+        path = line[3:].split(" -> ")[-1].strip('"')
+        dirty.setdefault(skill_of(path), []).append(path)
+    for name, files in sorted(dirty.items()):
+        print("local edits  %-22s %d file(s) uncommitted" % (name, len(files)))
+    subprocess.run(["git", "-C", REPO, "fetch", "-q"], capture_output=True)
+    behind = subprocess.run(
+        ["git", "-C", REPO, "rev-list", "--count", "HEAD..@{u}"],
+        capture_output=True, text=True,
+    )
+    if behind.returncode == 0 and behind.stdout.strip() != "0":
+        touched = subprocess.run(
+            ["git", "-C", REPO, "diff", "--name-only", "HEAD...@{u}"],
+            capture_output=True, text=True,
+        ).stdout.splitlines()
+        overlap = sorted(set(dirty) & {skill_of(p) for p in touched})
+        print(
+            "behind upstream by %s commit(s); commit local edits, then sync again"
+            % behind.stdout.strip()
+        )
+        if overlap:
+            print("CONFLICT RISK: upstream also changed: " + ", ".join(overlap))
+
+
 def git_pull():
     dirty = subprocess.run(
         ["git", "-C", REPO, "status", "--porcelain"], capture_output=True, text=True
     ).stdout.strip()
     if dirty:
         print("repo has local changes, skipping git pull")
+        drift_report()
         return
     result = subprocess.run(
         ["git", "-C", REPO, "pull", "--ff-only"], capture_output=True, text=True

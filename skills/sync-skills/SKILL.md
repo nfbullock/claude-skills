@@ -59,6 +59,34 @@ Handle the common failure modes yourself before reporting:
   problem; do not force-push. `sync --no-pull` applies the manifest without
   pulling if Nick wants the network step skipped.
 
+## Drift — uncommitted skill edits
+
+Because installed skills are symlinks into the repo, any edit to a skill
+(by Nick or by Claude, on any host) shows up as uncommitted working-tree
+drift, and sync reports it per skill:
+
+```
+local edits  gemini-prompt          2 file(s) uncommitted
+behind upstream by 3 commit(s); commit local edits, then sync again
+CONFLICT RISK: upstream also changed: gemini-prompt
+```
+
+Don't just echo this — resolve it:
+
+1. For each dirty skill, show Nick a short `git diff --stat` and ask: commit
+   (the normal answer — write a one-line message describing the change),
+   or discard (`git checkout -- skills/<name>`), or leave for later. Never
+   commit or discard edits you didn't make without asking.
+2. After committing, `git pull --rebase` then `git push`, then rerun sync.
+3. If the rebase hits a real conflict (same skill changed on two hosts —
+   sync flags this ahead of time as `CONFLICT RISK`), resolve it
+   file-by-file with Nick looking at both versions; never force-push,
+   never pick a side silently.
+
+Drift left uncommitted blocks `git pull` (sync skips it to protect the
+edits), so the host quietly stops receiving updates — that's why sync nags
+every run until the tree is clean.
+
 ## Deleting a skill
 
 Delete its directory from `<repo>/skills/` (git rm), commit, push. The next
