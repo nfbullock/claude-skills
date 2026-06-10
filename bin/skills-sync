@@ -207,6 +207,23 @@ def pick_class(manifest):
     return choice if choice in classes else None
 
 
+def commit_and_push_manifest(manifest, message):
+    with open(MANIFEST, "w") as f:
+        json.dump(manifest, f, indent=2)
+        f.write("\n")
+    subprocess.run(["git", "-C", REPO, "add", "manifest.json"], check=True)
+    staged = subprocess.run(
+        ["git", "-C", REPO, "diff", "--cached", "--quiet", "--", "manifest.json"]
+    )
+    if staged.returncode == 0:
+        return
+    subprocess.run(["git", "-C", REPO, "commit", "-q", "-m", message], check=True)
+    print("committed: " + message)
+    push = subprocess.run(["git", "-C", REPO, "push"], capture_output=True, text=True)
+    if push.returncode != 0:
+        print("push failed (no remote yet?) — push manually so other hosts see this change")
+
+
 def register_host(manifest, host, device_class):
     classes = manifest.get("classes", {})
     if device_class not in classes:
@@ -216,19 +233,26 @@ def register_host(manifest, host, device_class):
         "add": [],
         "remove": [],
     }
-    with open(MANIFEST, "w") as f:
-        json.dump(manifest, f, indent=2)
-        f.write("\n")
-    subprocess.run(["git", "-C", REPO, "add", "manifest.json"], check=True)
-    subprocess.run(
-        ["git", "-C", REPO, "commit", "-q", "-m",
-         "Register host %s (%s)" % (host, device_class)],
-        check=True,
-    )
-    print("registered host %r as %s and committed" % (host, device_class))
-    push = subprocess.run(["git", "-C", REPO, "push"], capture_output=True, text=True)
-    if push.returncode != 0:
-        print("push failed (no remote yet?) — push manually so other hosts see this one")
+    commit_and_push_manifest(manifest, "Register host %s (%s)" % (host, device_class))
+
+
+def prune_deleted(manifest):
+    """Drop manifest references to skills whose directory is gone, so a
+    deleted skill propagates: this host commits the cleanup, other hosts
+    pull it and unlink on their next sync."""
+    existing = set(repo_skills())
+    gone = set()
+    for cat, names in manifest.get("categories", {}).items():
+        gone.update(n for n in names if n not in existing)
+        manifest["categories"][cat] = [n for n in names if n in existing]
+    for entry in manifest.get("hosts", {}).values():
+        for key in ("add", "remove"):
+            gone.update(n for n in entry.get(key, []) if n not in existing)
+            entry[key] = [n for n in entry.get(key, []) if n in existing]
+    if gone:
+        commit_and_push_manifest(
+            manifest, "Remove deleted skill(s): " + ", ".join(sorted(gone))
+        )
 
 
 def cmd_bootstrap(args):
@@ -252,6 +276,7 @@ def cmd_sync(args):
     if not args.no_pull:
         git_pull()
     manifest = load_manifest()
+    prune_deleted(manifest)
     desired = desired_skills(manifest, host)
     if desired is None:
         fail(registration_help(host, manifest))

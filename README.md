@@ -76,6 +76,12 @@ bin/skills-sync status    # show desired vs installed, no changes
 directories in `~/.claude/skills` are never deleted. If one shadows a managed
 skill, `sync --adopt` moves it aside as `.<name>.pre-sync.bak` first.
 
+**Deleting a skill** is just deleting its directory here (git rm, commit,
+push). Sync self-heals the manifest — references to missing skills are
+pruned, committed, and pushed automatically — and every other host unlinks
+it on their next sync. Per-host opt-out (without deleting) is the host's
+`remove` list.
+
 ## Notes
 
 - Skills are **symlinked**, not copied — `git pull` is the whole update, and

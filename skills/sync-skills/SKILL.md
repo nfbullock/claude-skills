@@ -36,6 +36,12 @@ The output may end with two candidate lines — act on them, don't just echo:
   add it there in `manifest.json`, commit, push, and rerun
   `sync --adopt` so the local copy becomes a managed symlink. If he declines,
   leave it alone — unmanaged dirs are never touched.
+
+  **Bloat guard — before importing anything, run `du -sh` on it.** Over a
+  few MB, show Nick the largest files and what's regeneratable
+  (node_modules, model caches, rendered audio, transcripts) and gitignore
+  that bulk before the first commit. Never let a big binary into history
+  silently — it can't be cheaply removed later.
 - **`in repo, not selected for this host: ...`** — skills other hosts use
   that this one doesn't get. Mention them in one line; only edit the
   manifest if Nick asks to pull one in (host `add` for a one-off, category
@@ -52,6 +58,15 @@ Handle the common failure modes yourself before reporting:
 - **git pull failed (diverged/conflict)** — resolve in the repo like any git
   problem; do not force-push. `sync --no-pull` applies the manifest without
   pulling if Nick wants the network step skipped.
+
+## Deleting a skill
+
+Delete its directory from `<repo>/skills/` (git rm), commit, push. The next
+`sync` on any host self-heals the rest: it prunes the skill from every
+manifest category and host list (committing and pushing that cleanup), and
+unlinks it from `~/.claude/skills`. So when Nick says "delete the X skill",
+that's the whole flow — no manual manifest surgery needed. To take a skill
+off *one host only* (not delete it), use the host's `remove` list instead.
 
 ## Editing the manifest
 
