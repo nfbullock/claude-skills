@@ -1,8 +1,20 @@
 {
   "classes": {
-    "work-laptop": ["core", "work"],
-    "dev-box": ["core", "work", "personal"],
-    "studio": ["core", "work", "personal", "studio-only"]
+    "work-laptop": [
+      "core",
+      "work"
+    ],
+    "dev-box": [
+      "core",
+      "work",
+      "personal"
+    ],
+    "studio": [
+      "core",
+      "work",
+      "personal",
+      "studio-only"
+    ]
   },
   "categories": {
     "core": [
@@ -16,7 +28,21 @@
   },
   "hosts": {
     "studio": {
-      "categories": ["core", "work", "personal", "studio-only"],
+      "categories": [
+        "core",
+        "work",
+        "personal",
+        "studio-only"
+      ],
+      "add": [],
+      "remove": []
+    },
+    "fakebox": {
+      "categories": [
+        "core",
+        "work",
+        "personal"
+      ],
       "add": [],
       "remove": []
     }
