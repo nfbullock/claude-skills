@@ -1,0 +1,7 @@
+# Runtime artifacts that skills write into their own directory.
+# Skills are symlinked into ~/.claude/skills, so anything a skill writes
+# next to itself lands in this repo's working tree — keep it out of git.
+skills/*/transcripts/
+skills/*/.cache/
+*.pre-sync.bak
+.DS_Store

@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# yt-chat <youtube-url> [-i|--initial-context <text...>]
+#
+# Terminal entry point for yt-discuss. Fetches the transcript via the skill's
+# fetch.sh, then launches a fresh Claude Code session pointed at the yt-discuss
+# skill with the prepared transcript path. Useful when you'd rather start from
+# the terminal than paste a URL into an existing session.
+#
+# Lives next to the skill it serves. Exposed on PATH via:
+#   ~/.local/bin/yt-chat -> ~/.claude/skills/yt-discuss/yt-chat
+
+set -euo pipefail
+
+usage() {
+  echo "usage: yt-chat <youtube-url> [-i|--initial-context <text...>]" >&2
+  exit "${1:-1}"
+}
+
+URL=""
+CONTEXT=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -i|--initial-context)
+      shift
+      CONTEXT="$*"
+      break
+      ;;
+    -h|--help)
+      usage 0
+      ;;
+    -*)
+      echo "yt-chat: unknown flag: $1" >&2
+      usage
+      ;;
+    *)
+      if [[ -z "$URL" ]]; then
+        URL="$1"
+        shift
+      else
+        echo "yt-chat: unexpected argument: $1" >&2
+        usage
+      fi
+      ;;
+  esac
+done
+
+[[ -n "$URL" ]] || usage
+
+SKILL_DIR="$HOME/.claude/skills/yt-discuss"
+META="$("$SKILL_DIR/fetch.sh" "$URL")"
+eval "$META"  # populates TITLE, SOURCE, TRANSCRIPT_PATH, WORDS
+
+echo "yt-chat: launching claude in ~/Documents/sandbox ..." >&2
+
+PROMPT="Use the yt-discuss skill.
+
+Video: \"$TITLE\"
+URL: $URL
+Transcript source: $SOURCE
+Transcript path: $TRANSCRIPT_PATH
+Word count: $WORDS"
+
+if [[ -n "$CONTEXT" ]]; then
+  PROMPT="$PROMPT
+
+User's framing for this conversation: $CONTEXT"
+fi
+
+cd "$HOME/Documents/sandbox"
+exec claude "$PROMPT"

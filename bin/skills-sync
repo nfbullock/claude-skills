@@ -1,0 +1,235 @@
+#!/usr/bin/env python3
+"""Manage Claude skills across hosts from this repo's manifest.json.
+
+Skills live in <repo>/skills/<name>/ and are installed by symlinking each
+desired skill into ~/.claude/skills. Which skills a host gets is decided by
+manifest.json: each host lists categories (unioned) plus add/remove overrides.
+
+Subcommands:
+  bootstrap   First run on a new host: record repo path in
+              ~/.claude/skills-sync.json, verify this host is in the
+              manifest, then apply (no git pull).
+  sync        git pull --ff-only, then apply the manifest. The day-to-day
+              command; also what the sync-skills meta-skill runs.
+  status      Show desired vs installed vs unmanaged, no changes.
+
+Flags:
+  --adopt     When a real (non-symlink) directory occupies a desired skill's
+              slot in ~/.claude/skills, rename it to <name>.pre-sync.bak and
+              link the repo version. Without it, collisions are warnings.
+  --no-pull   Skip git pull during sync.
+
+Host identity is `hostname -s` lowercased; override with SKILLS_HOST=<name>.
+Stdlib only, runs on the macOS system python3 (3.9+). No third-party deps,
+so it works on a fresh host before any venv exists.
+"""
+
+import argparse
+import json
+import os
+import socket
+import subprocess
+import sys
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(os.path.realpath(__file__))))
+SKILLS_SRC = os.path.join(REPO, "skills")
+INSTALL_DIR = os.path.expanduser("~/.claude/skills")
+STATE_FILE = os.path.expanduser("~/.claude/skills-sync.json")
+MANIFEST = os.path.join(REPO, "manifest.json")
+
+
+def fail(msg):
+    print("error: " + msg, file=sys.stderr)
+    sys.exit(1)
+
+
+def host_name():
+    return os.environ.get("SKILLS_HOST") or socket.gethostname().split(".")[0].lower()
+
+
+def load_manifest():
+    if not os.path.isfile(MANIFEST):
+        fail("no manifest.json at " + MANIFEST)
+    with open(MANIFEST) as f:
+        return json.load(f)
+
+
+def desired_skills(manifest, host):
+    entry = manifest.get("hosts", {}).get(host)
+    if entry is None:
+        return None
+    skills = set()
+    for cat in entry.get("categories", []):
+        if cat not in manifest.get("categories", {}):
+            fail("host %r references unknown category %r" % (host, cat))
+        skills.update(manifest["categories"][cat])
+    skills.update(entry.get("add", []))
+    skills.difference_update(entry.get("remove", []))
+    return sorted(skills)
+
+
+def installed_state():
+    """Map of name -> ('managed', target) | ('foreign-link', target) | ('real', None)."""
+    state = {}
+    if not os.path.isdir(INSTALL_DIR):
+        return state
+    for name in sorted(os.listdir(INSTALL_DIR)):
+        path = os.path.join(INSTALL_DIR, name)
+        if os.path.islink(path):
+            target = os.path.realpath(path)
+            kind = "managed" if target.startswith(SKILLS_SRC + os.sep) else "foreign-link"
+            state[name] = (kind, target)
+        elif name.startswith("."):
+            continue
+        else:
+            state[name] = ("real", None)
+    return state
+
+
+def apply_manifest(desired, adopt):
+    os.makedirs(INSTALL_DIR, exist_ok=True)
+    state = installed_state()
+    linked, removed, warnings = [], [], []
+
+    for name in desired:
+        src = os.path.join(SKILLS_SRC, name)
+        dst = os.path.join(INSTALL_DIR, name)
+        if not os.path.isdir(src):
+            warnings.append("%s: in manifest but missing from %s" % (name, SKILLS_SRC))
+            continue
+        kind, target = state.get(name, (None, None))
+        if kind == "managed" and target == os.path.realpath(src):
+            continue
+        if kind in ("real", "foreign-link"):
+            if not adopt:
+                warnings.append(
+                    "%s: %s already exists at %s and is not managed by this repo "
+                    "(rerun with --adopt to move it aside)" % (name, kind, dst)
+                )
+                continue
+            # Dot-prefixed so Claude Code's skill discovery ignores the backup.
+            bak = os.path.join(INSTALL_DIR, "." + name + ".pre-sync.bak")
+            os.rename(dst, bak)
+            warnings.append("%s: moved existing %s to %s" % (name, kind, bak))
+        elif kind == "managed":
+            os.remove(dst)  # managed link pointing at a stale path; relink below
+        os.symlink(src, dst)
+        linked.append(name)
+
+    for name, (kind, _target) in state.items():
+        if kind == "managed" and name not in desired:
+            os.remove(os.path.join(INSTALL_DIR, name))
+            removed.append(name)
+
+    return linked, removed, warnings
+
+
+def git_pull():
+    dirty = subprocess.run(
+        ["git", "-C", REPO, "status", "--porcelain"], capture_output=True, text=True
+    ).stdout.strip()
+    if dirty:
+        print("repo has local changes, skipping git pull")
+        return
+    result = subprocess.run(
+        ["git", "-C", REPO, "pull", "--ff-only"], capture_output=True, text=True
+    )
+    out = (result.stdout + result.stderr).strip()
+    if result.returncode != 0:
+        if "no upstream" in out.lower() or "does not appear" in out.lower():
+            print("no upstream remote yet, skipping git pull")
+        else:
+            fail("git pull failed:\n" + out)
+    elif "Already up to date" not in out:
+        print(out)
+
+
+def write_state(host):
+    os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
+    with open(STATE_FILE, "w") as f:
+        json.dump({"repo": REPO, "host": host}, f, indent=2)
+        f.write("\n")
+
+
+def report(linked, removed, warnings):
+    for name in linked:
+        print("linked   " + name)
+    for name in removed:
+        print("removed  " + name)
+    for w in warnings:
+        print("warning  " + w)
+    if not (linked or removed or warnings):
+        print("up to date")
+
+
+def registration_help(host):
+    return (
+        "host %r is not in manifest.json. Add an entry like:\n\n"
+        '  "%s": {"categories": ["core"], "add": [], "remove": []}\n\n'
+        "under \"hosts\" in %s, commit, then rerun." % (host, host, MANIFEST)
+    )
+
+
+def cmd_bootstrap(args):
+    host = host_name()
+    manifest = load_manifest()
+    desired = desired_skills(manifest, host)
+    if desired is None:
+        fail(registration_help(host))
+    write_state(host)
+    print("registered repo %s for host %r in %s" % (REPO, host, STATE_FILE))
+    report(*apply_manifest(desired, args.adopt))
+
+
+def cmd_sync(args):
+    host = host_name()
+    if not args.no_pull:
+        git_pull()
+    manifest = load_manifest()
+    desired = desired_skills(manifest, host)
+    if desired is None:
+        fail(registration_help(host))
+    write_state(host)
+    report(*apply_manifest(desired, args.adopt))
+
+
+def cmd_status(_args):
+    host = host_name()
+    manifest = load_manifest()
+    desired = desired_skills(manifest, host)
+    if desired is None:
+        fail(registration_help(host))
+    state = installed_state()
+    print("host: %s" % host)
+    print("repo: %s" % REPO)
+    print("desired: %s" % ", ".join(desired))
+    for name in desired:
+        kind, _ = state.get(name, (None, None))
+        if kind == "managed":
+            mark = "installed"
+        elif kind is None:
+            mark = "MISSING (run sync)"
+        else:
+            mark = "BLOCKED by unmanaged %s (sync --adopt)" % kind
+        print("  %-24s %s" % (name, mark))
+    extras = [n for n, (k, _) in state.items() if k != "managed" or n not in desired]
+    unmanaged = [n for n in extras if n not in desired]
+    if unmanaged:
+        print("unmanaged in %s: %s" % (INSTALL_DIR, ", ".join(unmanaged)))
+
+
+def main():
+    parser = argparse.ArgumentParser(prog="skills-sync", description=__doc__)
+    sub = parser.add_subparsers(dest="command", required=True)
+    for name, func in (("bootstrap", cmd_bootstrap), ("sync", cmd_sync), ("status", cmd_status)):
+        p = sub.add_parser(name)
+        p.add_argument("--adopt", action="store_true")
+        if name == "sync":
+            p.add_argument("--no-pull", action="store_true")
+        p.set_defaults(func=func)
+    args = parser.parse_args()
+    args.func(args)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,21 @@
+{
+  "categories": {
+    "core": [
+      "sync-skills"
+    ],
+    "mac": [
+      "yt-discuss"
+    ],
+    "server": []
+  },
+  "hosts": {
+    "studio": {
+      "categories": [
+        "core",
+        "mac"
+      ],
+      "add": [],
+      "remove": []
+    }
+  }
+}
