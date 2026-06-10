@@ -21,17 +21,32 @@ A host's skill set is the union of its categories, plus `add`, minus `remove`:
 {
   "categories": {
     "core": ["sync-skills"],
-    "mac": ["yt-discuss"],
-    "server": []
+    "work": [],
+    "personal": ["yt-discuss"],
+    "studio-only": []
   },
   "hosts": {
-    "studio": {"categories": ["core", "mac"], "add": [], "remove": []}
+    "studio": {"categories": ["core", "work", "personal", "studio-only"], "add": [], "remove": []}
   }
 }
 ```
 
+Categories are composable slices, and device classes are compositions of
+them — a skill added to `work` reaches every host that includes `work`:
+
+| device class | categories |
+|---|---|
+| work laptop | `core, work` |
+| dev box | `core, work, personal` |
+| studio | `core, work, personal, studio-only` |
+
 Hosts are keyed by `hostname -s` lowercased (override: `SKILLS_HOST=<name>`).
 Every host should include `core` so it gets the `sync-skills` meta-skill.
+
+After applying, sync also reports drift in both directions: repo skills not
+selected for this host, and local-only skills in `~/.claude/skills` the repo
+doesn't know about (import candidates — the sync-skills meta-skill offers to
+fold them in).
 
 ## New host
 

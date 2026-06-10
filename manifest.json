@@ -3,17 +3,15 @@
     "core": [
       "sync-skills"
     ],
-    "mac": [
+    "work": [],
+    "personal": [
       "yt-discuss"
     ],
-    "server": []
+    "studio-only": []
   },
   "hosts": {
     "studio": {
-      "categories": [
-        "core",
-        "mac"
-      ],
+      "categories": ["core", "work", "personal", "studio-only"],
       "add": [],
       "remove": []
     }

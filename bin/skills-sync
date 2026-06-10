@@ -151,6 +151,26 @@ def write_state(host):
         f.write("\n")
 
 
+def repo_skills():
+    if not os.path.isdir(SKILLS_SRC):
+        return []
+    return sorted(
+        n for n in os.listdir(SKILLS_SRC) if os.path.isdir(os.path.join(SKILLS_SRC, n))
+    )
+
+
+def candidates_report(desired):
+    """Surface skills that exist on one side but not the other, so the
+    sync-skills meta-skill can prompt about importing/assigning them."""
+    unselected = [n for n in repo_skills() if n not in desired]
+    if unselected:
+        print("in repo, not selected for this host: " + ", ".join(unselected))
+    state = installed_state()
+    local_only = sorted(n for n, (k, _) in state.items() if k != "managed")
+    if local_only:
+        print("local only, not in repo (import candidates): " + ", ".join(local_only))
+
+
 def report(linked, removed, warnings):
     for name in linked:
         print("linked   " + name)
@@ -179,6 +199,7 @@ def cmd_bootstrap(args):
     write_state(host)
     print("registered repo %s for host %r in %s" % (REPO, host, STATE_FILE))
     report(*apply_manifest(desired, args.adopt))
+    candidates_report(desired)
 
 
 def cmd_sync(args):
@@ -191,6 +212,7 @@ def cmd_sync(args):
         fail(registration_help(host))
     write_state(host)
     report(*apply_manifest(desired, args.adopt))
+    candidates_report(desired)
 
 
 def cmd_status(_args):

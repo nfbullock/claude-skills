@@ -27,6 +27,20 @@ Run:
 Then report the output plainly: what was linked, removed, or warned about.
 "up to date" means nothing changed.
 
+The output may end with two candidate lines — act on them, don't just echo:
+
+- **`local only, not in repo (import candidates): ...`** — skills sitting in
+  `~/.claude/skills` that the repo doesn't know about. For each, ask Nick
+  whether to import it: copy the directory into `<repo>/skills/<name>/`,
+  ask which category it belongs in (work / personal / studio-only / core),
+  add it there in `manifest.json`, commit, push, and rerun
+  `sync --adopt` so the local copy becomes a managed symlink. If he declines,
+  leave it alone — unmanaged dirs are never touched.
+- **`in repo, not selected for this host: ...`** — skills other hosts use
+  that this one doesn't get. Mention them in one line; only edit the
+  manifest if Nick asks to pull one in (host `add` for a one-off, category
+  membership if every host of that type should have it).
+
 Handle the common failure modes yourself before reporting:
 
 - **Host not in manifest** — the error message includes the JSON snippet to
