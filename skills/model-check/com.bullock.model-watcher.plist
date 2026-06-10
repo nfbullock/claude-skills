@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.bullock.model-watcher</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/dad/venv/default/bin/python</string>
+        <string>/Users/dad/.local/bin/model_watcher.py</string>
+    </array>
+
+    <!-- Weekly: Mondays at 09:00. Catches up if the machine was asleep. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key>
+        <integer>1</integer>
+        <key>Hour</key>
+        <integer>9</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/dad/Library/Logs/model-watcher/launchd.out</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/dad/Library/Logs/model-watcher/launchd.err</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/dad/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>HOME</key>
+        <string>/Users/dad</string>
+    </dict>
+</dict>
+</plist>

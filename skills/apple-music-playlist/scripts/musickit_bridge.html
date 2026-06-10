@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Apple Music Auth Bridge</title>
+  <script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js"
+          data-web-components async></script>
+</head>
+<body>
+  <h1>Apple Music Authorization</h1>
+  <p>Click below to authorize. The Music User Token will be saved locally.</p>
+  <button id="auth-btn">Authorize Apple Music</button>
+  <pre id="status"></pre>
+
+  <script>
+    document.addEventListener('musickitloaded', async () => {
+      // Developer token is injected by serve_bridge.py at request time.
+      const devToken = document.querySelector('meta[name="dev-token"]').content;
+      await MusicKit.configure({
+        developerToken: devToken,
+        app: { name: 'Sylvia Lesson Playlist Skill', build: '1.0.0' },
+      });
+      const music = MusicKit.getInstance();
+
+      document.getElementById('auth-btn').addEventListener('click', async () => {
+        const status = document.getElementById('status');
+        try {
+          const mut = await music.authorize();
+          status.textContent = 'Authorized. Saving token...';
+          const r = await fetch('/save-token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ music_user_token: mut }),
+          });
+          status.textContent = r.ok
+            ? 'Saved. You can close this tab.'
+            : 'Save failed: ' + await r.text();
+        } catch (e) {
+          status.textContent = 'Error: ' + e.message;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

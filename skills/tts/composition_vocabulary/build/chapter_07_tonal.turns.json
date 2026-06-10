@@ -1,0 +1,174 @@
+[
+  [
+    "NARRATOR",
+    "Most listeners experience music as something that happens to them. A song begins, builds, lands, and ends, and along the way there are moments of tension and moments of relief, and the body registers these without naming them. What this chapter is about is the machinery underneath that experience \u2014 specifically, the machinery of tonal resolution, and what happens when a composer chooses to refuse it."
+  ],
+  [
+    "NARRATOR",
+    "Refusing resolution is one of the deepest moves a composer can make, because resolution is one of the deepest promises music makes to a listener. When a song sets up tension and then withholds the release, the composer is not just choosing an unusual sound. They are intervening in the listener's nervous system. They are saying, by structure rather than by lyric, that the unresolved state is the point. Understanding how this works lets you do something most listeners cannot \u2014 feel the difference between a piece that refuses resolution on purpose and a piece that simply drifts because the composer did not know where to go. That distinction is small on the surface and enormous underneath. It is the difference between art that is making an argument and art that is failing to."
+  ],
+  [
+    "NARRATOR",
+    "This chapter sits inside a larger study of how musical compositions are built. Earlier chapters have looked at form, at repetition and variation, at the way pieces declare and then vary their materials. Here the focus narrows to one specific dimension \u2014 the harmonic dimension \u2014 and to the particular kind of argument a composer can make by leaving a chord progression deliberately unanswered. The examples will walk through three pieces that do this with great care: Pink Floyd's Shine On You Crazy Diamond, Debyoosee's Prelude to the Afternoon of a Faun, and Radiohead's How to Disappear Completely. Before any of that, though, the vocabulary needs to be laid down."
+  ],
+  [
+    "NARRATOR",
+    "Start with the simplest possible frame. A piece of tonal music is a system with a home. The home is called the tonic. The tonic is a single note, and by extension a chord built on that note, that the rest of the music orbits around. When a song is in G minor, it means G is home. G minor is the chord that feels like the front door. Everything else in the piece is at some greater or lesser distance from that door."
+  ],
+  [
+    "NARRATOR",
+    "For a reader more comfortable with code than with staff paper, it can help to imagine the tonic as the root of a tree, or as the default state of a state machine. Every other note and chord in the piece is reachable from the root, and every other note and chord has a defined relationship to it \u2014 closer or farther, more stable or less stable, pulling you home or pulling you away. The music is the path through that tree. Resolution is returning to root. Tension is being anywhere else."
+  ],
+  [
+    "NARRATOR",
+    "A cadence is the move home. More precisely, a cadence is a small two-chord or three-chord sequence that signals \"we have arrived.\" The most powerful one in Western music is called the authentic cadence. In an authentic cadence, the chord built on the fifth note of the scale moves to the chord built on the first note of the scale. The fifth-degree chord is called the dominant, and it carries enormous expectational weight \u2014 it is the chord that most strongly wants to go home. In G minor, the dominant is a D chord, and an authentic cadence is that D chord resolving to a G minor chord. If you have ever heard a piece of classical music end with two strong chords that feel utterly final, almost like a door slamming shut, that is an authentic cadence."
+  ],
+  [
+    "NARRATOR",
+    "The dominant has its power for a specific reason. It contains a dissonance called a tritone \u2014 an interval of three whole steps, acoustically rough, two notes beating against each other at a rate the ear registers as harsh. The tritone, and especially the note within the dominant that sits one half-step below the tonic, called the leading tone, behaves like a question. The tonic resolves it. The leading tone wants to lift up to the tonic the way a coiled spring wants to release. The question gets answered, the spring releases, and the listener feels that distinctive sense of having arrived."
+  ],
+  [
+    "NARRATOR",
+    "There are weaker cadences too. A half cadence ends on the dominant rather than passing through it \u2014 it is a question left hanging. A plagal cadence moves from the fourth chord of the scale home to the first; this is softer, more church-like, the \"amen\" cadence you hear at the end of hymns. A deceptive cadence sets up the dominant as if it is about to resolve home, and then resolves somewhere else instead \u2014 a feint, a head-fake. These are the basic vocabulary. Composers have been arguing with these conventions for at least three hundred years."
+  ],
+  [
+    "NARRATOR",
+    "One more set of terms before the analysis begins. The major and minor scales most listeners grow up hearing are not the only scales available. There is an older family called the modes, scales that have different patterns of whole steps and half steps and therefore different emotional colors. Dorian is a minor-ish mode with a brighter raised sixth. Mixolydian is a major-ish mode with a lowered seventh. The crucial thing about most modal scales, from the standpoint of this chapter, is that they often lack a strong leading tone. Without that half-step pull up to the tonic, the gravity toward home is weaker. Modal music tends to float where tonal music tends to fall."
+  ],
+  [
+    "NARRATOR",
+    "The perceptual story is worth taking seriously, because it is doing more work than people usually credit. When a dominant chord resolves to a tonic, several things happen in your hearing system at once. The tritone inside the dominant chord splits apart and both notes move by a half-step to consonant notes inside the tonic. The bass note drops by a fifth, or rises by a fourth, which is the strongest root motion in tonal music. The harmonic series, the natural overtones each note produces, lines up cleanly on the tonic in a way it did not on the dominant."
+  ],
+  [
+    "NARRATOR",
+    "What you hear, subjectively, is a kind of physical relief. Roughness becoming smoothness. A question being answered. Your prediction machinery, which had been firing about what should come next, gets the thing it was expecting, and the prediction error drops to zero. There is good evidence from music cognition research \u2014 David Huron's work, especially in his book Sweet Anticipation, is the classic reference \u2014 that the pleasure of resolution is at least partly the pleasure of accurate prediction. Tension and release map onto expectation and confirmation."
+  ],
+  [
+    "NARRATOR",
+    "When resolution is denied, the inverse happens. The prediction machinery stays lit. The unresolved dissonance keeps the harmonic series misaligned. The bass refuses the strong root motion. Your ear is still asking. The body of the listener is still tilted forward. This is not a metaphor \u2014 psychophysiological measurements show real changes in heart rate variability, skin conductance, and pupil dilation tracking with unresolved harmonic tension. The body knows it has not been let off the hook."
+  ],
+  [
+    "NARRATOR",
+    "So when a composer refuses resolution, they are making a real intervention in the listener's nervous system. They are choosing to leave you in a particular kind of suspended state, and they are saying, by structure rather than by lyric, that the suspended state is the point. The form is the argument."
+  ],
+  [
+    "NARRATOR",
+    "There are roughly three families of techniques, and they are worth naming because the examples that follow use different ones."
+  ],
+  [
+    "NARRATOR",
+    "The first is to set up a strong expectation of a cadence and then withhold it. The dominant chord arrives, the ear leans forward, and the tonic never comes. The piece pivots somewhere else, or the dominant just hangs there, or a deceptive cadence takes you to a strange chord. The home is implied but never visited."
+  ],
+  [
+    "NARRATOR",
+    "The second is to weaken the tonic itself. Make the home note feel less like a home. This is what modal music does to some extent \u2014 modes like Dorian or Mixolydian use scales that lack the strong leading tone that pulls toward the tonic. Without that half-step pull, the gravity is weaker. Pieces that sit in modes feel like they float more than they fall."
+  ],
+  [
+    "NARRATOR",
+    "The third is to make the tonic ambiguous in the first place. Construct the piece so that the listener cannot tell where home is. Two competing tonal centers, neither winning. Or whole-tone scales, which have no leading tone and no perfect fifth, so they cannot establish a tonic at all. Or rapid modulation, where the music keeps changing keys before any of them can settle. There is nowhere to come home to because there is no home."
+  ],
+  [
+    "NARRATOR",
+    "These three strategies can be combined. They almost always are."
+  ],
+  [
+    "NARRATOR",
+    "This is the obvious one, and it is more interesting technically than its reputation suggests. The piece is in G minor, broadly \u2014 but the introduction sits on a G minor pedal for an extremely long time without going anywhere. A pedal is a sustained low note that the rest of the harmony moves over. The pedal is the tonic, so in some flat sense the piece is at home, but nothing is happening at home. There is no harmonic motion. There is no departure to return from. The music is suspended in its own beginning."
+  ],
+  [
+    "NARRATOR",
+    "When the famous four-note guitar theme finally enters, the notes are B-flat, F, G, E. The first interval, B-flat to F, is an open fifth that suggests B-flat as a tonal center. The third note, G, retroactively reframes the previous two as part of a G minor harmony. So the listener's ear has been told a tonal story and then told a different tonal story, all inside three notes. The phrase then reaches up to E, which is the raised sixth degree of G minor \u2014 a note that does not belong to natural G minor. This bends the mode toward G Dorian, which has a brighter, less plaintive character. The piece keeps refusing to commit to a single modal identity. It is G minor, but with a sixth that floats between flat and raised, and the listener cannot quite pin down what color of grief they are listening to."
+  ],
+  [
+    "NARRATOR",
+    "Then there is the structural argument. Shine On is dedicated to Syd Barrett, the founder of the band who had a severe psychiatric break and was no longer himself. The album it bookends is called Wish You Were Here. The piece is split into two halves \u2014 Parts I through V at the start of the album, Parts VI through IX at the end. The album opens with this music and closes with this music, and the middle of the record contains entirely different songs. The piece is a frame around an absence. Structurally it is doing the same thing the lyrics are doing: returning, again and again, to the place where Syd should be, and finding that he is not there. The harmonic refusal to settle \u2014 the long pedals, the modal drift, the ambiguous opening \u2014 is the sonic correlate of grief that cannot find its object. There is no resolution because there is no Syd to resolve to."
+  ],
+  [
+    "NARRATOR",
+    "Listen for the moment around four and a half minutes into Part I, when the band finally hits the first really strong harmonic motion. Even there, the cadence is soft \u2014 more plagal than authentic. The piece never really slams the door. It opens it and leaves it open."
+  ],
+  [
+    "NARRATOR",
+    "Composed between 1892 and 1894, Debyoosee's Prelude is one of the founding documents of modern music, and what it founds is the legitimacy of harmonic ambiguity as a primary expressive device. The piece is based on a poem by Mal-ar-may about a faun in a sun-drenched landscape, half-asleep, uncertain whether the nymphs he remembers were real or dreamt. The whole poem is about the impossibility of telling waking from dreaming, memory from invention. Debyoosee's job was to set that uncertainty in sound."
+  ],
+  [
+    "NARRATOR",
+    "The opening is a solo flute. It plays a slow chromatic line from C-sharp down to G-natural and back. That interval, C-sharp to G-natural, is a tritone, the most ambiguous interval in Western harmony, the same one that makes the dominant chord want to resolve. But here the tritone is presented bare, alone, with no surrounding chord to tell you what it means. It refuses to declare a key. The ear cannot tell whether this is in E major, or C-sharp minor, or somewhere else entirely."
+  ],
+  [
+    "NARRATOR",
+    "The piece does, eventually, settle into E major \u2014 but it takes most of the work to get there, and even then the resolution is gentle, sighed rather than stamped. Analysts have argued that the piece operates on what is sometimes called bifocal tonality \u2014 two competing tonal centers, C-sharp and E, neither of which fully dominates. Debyoosee also uses whole-tone scales in several passages. The whole-tone scale is interesting because it is perfectly symmetric \u2014 every step is the same size \u2014 and so it has no leading tone, no dominant, no possibility of cadence. It is a scale that physically cannot resolve. While it plays, the music is suspended in pure floating space."
+  ],
+  [
+    "NARRATOR",
+    "The Faun was scandalous when it premiered, not because anything in it sounds harsh \u2014 it is in fact ravishingly beautiful \u2014 but because the audience could not find anywhere to stand. The piece had no skeleton of cadences. It had no clear arrival points. It glided. To ears trained on the Beethoven model, where every piece is an argument with cadences as paragraph breaks, the Faun seemed structurally lawless. Pierre boo-lezz later said that modern music began with this piece, and he meant something specific: this is where Western composers stopped treating tonal resolution as a structural necessity and started treating it as an option."
+  ],
+  [
+    "NARRATOR",
+    "From Kid A, 2000. The song is in F-sharp minor \u2014 that part is clear. But the harmonic motion is built around chords that keep pulling the tonal center in different directions. The progression cycles through F-sharp minor, D major, A major, and E major. F-sharp minor is the tonic. A major is the relative major \u2014 the bright sibling key, three semitones up. D major is the sixth chord in F-sharp minor, a chord that often serves as a soft pivot toward other keys. E major is the seventh, a chord that in F-sharp minor sounds like a flat-seven, a modal color that suggests Dorian or Aeolian rather than functional minor."
+  ],
+  [
+    "NARRATOR",
+    "What this means in practice is that the song's chord progression is full of plausible cadences that never quite happen. Every time the harmony moves, it could be heading home, or it could be heading toward A major and abandoning F-sharp minor entirely. The song never lets you know which is happening. The bass line, on top of this, is a six-note figure played over eight beats \u2014 meaning the bass pattern goes out of phase with the underlying meter and only realigns every sixteen beats. So you cannot even tell where the downbeat is. You think you know, and then a chord change two beats later than expected tells you that you did not."
+  ],
+  [
+    "NARRATOR",
+    "Layered on top of this, the orchestral string arrangement, credited to Jonny Greenwood and written for the Orchestra of St John's, uses microtonal slides \u2014 notes that bend between the official pitches of the scale. The strings smear the harmony so that even within a single chord, you cannot pin down what notes are sounding. This is the third strategy from earlier, taken to an extreme: the tonic is not just ambiguous, the pitches themselves are ambiguous. There is nowhere to come home to because the place where home would be is being actively blurred."
+  ],
+  [
+    "NARRATOR",
+    "The lyric is about dissociation. \"That there, that's not me.\" The narrator is watching himself from outside. The form does what the lyric says: it disassembles the listener's sense of where they are in the music, where the beat is, what key they are in, until they too are watching themselves from outside."
+  ],
+  [
+    "NARRATOR",
+    "There is a real failure mode in all of this, and it is worth naming directly. The failure mode is that the listener disengages. Resolution is not just a payoff \u2014 it is a contract. The composer is telling you, by setting up tension, that the tension is going somewhere. If the tension goes nowhere, repeatedly, the listener stops believing the contract. They stop leaning forward. The body stops being tilted. And then you have lost them."
+  ],
+  [
+    "NARRATOR",
+    "What separates deliberate refusal from drift comes down to roughly three things."
+  ],
+  [
+    "NARRATOR",
+    "The first is that the refusal must be specific. The composer must know what cadence they are not playing. Shine On is not vaguely meandering \u2014 it sits on a G minor pedal, and you can feel that it is sitting there on purpose. The refusal is pointed at something. Drift, by contrast, is when the music just wanders because the composer did not know where to go. The ear can usually tell the difference, even when the surface sounds similar. Specificity reads as intention."
+  ],
+  [
+    "NARRATOR",
+    "The second is that something else has to be doing work in the absence of harmonic resolution. The Faun has melodic gesture and orchestral color so seductive that the ear is happy to be suspended. How to Disappear Completely has the string arrangement, the haunted vocal, the rhythmic dislocation \u2014 all of these are doing structural work even as the harmony refuses to. Shine On has the slow accumulation of textures, the way each new instrument enters as a kind of small event. When harmonic motion is denied, other parameters have to carry the listener's attention. Otherwise the music is just sitting still."
+  ],
+  [
+    "NARRATOR",
+    "The third is that the refusal has to mean something. The form has to be an argument about something. Floyd's refusal means grief that has no object. Debyoosee's means the dream-logic of the poem. Radiohead's means dissociation. When the form is in conversation with content \u2014 lyrical, emotional, philosophical \u2014 the refusal becomes legible. The listener cannot necessarily articulate it, but they can feel that the music is about something, and that being denied resolution is part of what the music is about. Without that, refusal is just absence. With it, refusal is statement."
+  ],
+  [
+    "NARRATOR",
+    "The cleanest test: can you write the one-sentence philosophical position the piece is taking? If yes, the form-as-argument is likely doing real work. If the answer is that the song just hangs there, that is probably what listeners will hear too."
+  ],
+  [
+    "NARRATOR",
+    "This question deserves care. Here is what seems defensible."
+  ],
+  [
+    "NARRATOR",
+    "Some elements of tension and release are almost certainly culturally universal. The harmonic series \u2014 the natural overtones a vibrating string produces \u2014 is a physical fact. Intervals that align with the early overtones, like octaves, fifths, and fourths, are perceived as consonant across virtually every musical culture that has been studied. Intervals that fall between overtones, that cause acoustic beating, are perceived as rougher. Infants prefer consonance over dissonance, before any cultural exposure could plausibly explain the preference. There is something biological happening with how the ear processes acoustic combinations."
+  ],
+  [
+    "NARRATOR",
+    "The specific machinery of the authentic cadence \u2014 dominant-to-tonic motion, the role of the leading tone, the architecture of voice-leading \u2014 is much more culturally specific. Plenty of musical traditions have no analog. Indian classical music has resolution but it operates through raga and tala, not through Western functional harmony. Indonesian gam-uh-lahn has cyclical structures that do not really have cadences in the Western sense at all. Much African polyrhythmic music achieves tension and release through rhythmic phasing rather than harmonic motion. The idea that pieces should begin in a key, depart, and return for a final cadential resolution \u2014 that is a specifically Western convention, more or less codified in the seventeenth century and most fully developed in the eighteenth and nineteenth."
+  ],
+  [
+    "NARRATOR",
+    "So when Pink Floyd refuses cadential resolution, they are arguing with a particular tradition. The argument is legible mostly to listeners who have internalized that tradition. To a listener with no exposure to Western tonal music, Shine On might just sound like a long thing that is happening \u2014 the refusal would not register as a refusal, because the expectation of resolution would not be there to refuse."
+  ],
+  [
+    "NARRATOR",
+    "What does seem to translate across cultures is the more basic dynamic of expectation and surprise. Music sets up patterns, and the listener's predictive machinery starts forecasting what comes next. When the forecast is met, there is pleasure. When the forecast is violated in interesting ways, there is also pleasure, of a different and often deeper kind. When the forecast is violated cheaply, or never met, there is confusion and disengagement. This dynamic \u2014 pattern, prediction, fulfillment, surprise \u2014 appears to be roughly universal. The specific musical vocabulary that instantiates it is local."
+  ],
+  [
+    "NARRATOR",
+    "Tonal resolution, as Western composers practice it, is a culturally specific machine. But the underlying psychophysics of tension and release is built into how brains process sound. The Western tradition just happens to have built one particularly elaborate version of that machine, and the modernists in this chapter \u2014 Debyoosee, Floyd, Radiohead \u2014 are people who have looked at the machine, understood it deeply, and chosen to leave specific gears disengaged for specific reasons. That is the move. That is the argument."
+  ],
+  [
+    "NARRATOR",
+    "The thing to carry forward as a listener is the distinction between refusal and drift. A piece that refuses resolution on purpose has a shape, even when the shape is suspension. You can feel the missing cadence \u2014 feel the place where the door should have closed and did not. A piece that drifts has no such shape; it simply meanders because nothing inside it knew where to go. Trained ears can usually tell the difference within thirty seconds, and once you can tell the difference, a great deal of music opens up. You stop asking whether a piece resolves and start asking what it does instead, and why. The withheld cadence becomes audible as a choice rather than an absence. That is the listening posture the rest of this study is trying to build."
+  ]
+]

@@ -22,9 +22,30 @@
     ],
     "work": [],
     "personal": [
-      "yt-discuss"
+      "yt-discuss",
+      "things",
+      "push-notify",
+      "soup-recipe",
+      "skylight-calendar"
     ],
-    "studio-only": []
+    "studio-only": [
+      "apple-music-playlist",
+      "cover-common",
+      "cover-deconstruct",
+      "gemini-prompt",
+      "mindmap",
+      "model-check",
+      "money",
+      "music-status",
+      "print-today",
+      "projects-status",
+      "reaper",
+      "recording-watcher",
+      "research",
+      "skills-status",
+      "song-recipe",
+      "tts"
+    ]
   },
   "hosts": {
     "studio": {

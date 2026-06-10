@@ -1,0 +1,10 @@
+[project]
+name = "podcast-renderer"
+version = "0.1.0"
+description = "Two-voice podcast rendering with VibeVoice on Mac Studio."
+requires-python = ">=3.11"
+dependencies = [
+    "mlx-audio",
+    "soundfile",
+    "numpy",
+]

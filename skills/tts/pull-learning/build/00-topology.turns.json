@@ -1,0 +1,146 @@
+[
+  [
+    "NARRATOR",
+    "A piece of learning is **pull-shaped** when the demand for it originates inside the learner \u2014 a question that won't leave them alone, a gap they are actively reaching to close, a felt-sense pressure toward some specific competence or understanding. The learner is the source of the request; the world supplies the answers."
+  ],
+  [
+    "NARRATOR",
+    "A piece of learning is **push-shaped** when the demand originates outside \u2014 a curriculum, an algorithm, an employer mandate, a social expectation, a peer's enthusiasm, a recommendation engine. The world is the source of the request; the learner's job is to absorb, comply, or perform absorption."
+  ],
+  [
+    "NARRATOR",
+    "That is the topology. Two words and one preposition: demand originating inside vs outside the learner. Everything else \u2014 interest-led, self-directed, intrinsic motivation, constructionism, unschooling \u2014 is a regional dialect of the same thing or a near-cousin that conflates additional claims with the topological one."
+  ],
+  [
+    "NARRATOR",
+    "I want to defend that the distinction is sharp, not a continuum's two ends. Most actual learning *episodes* are mixed \u2014 you took an algebra class because school made you, but somewhere in the third week the radicals became fascinating to you in their own right. That mixedness is real and chapter 02 will pull it apart in the variables theory. But the topology itself is binary at the level of where any given *unit of demand* originates. The mixed cases aren't a third category; they are a sequence of pull-units and push-units interleaved in the same biographical window, and the analytical move that pays the most is to keep them separate rather than smear them into a \"mostly pull\" grade."
+  ],
+  [
+    "NARRATOR",
+    "The cleanest Python-developer analogy is inversion of control. In a framework, the framework calls your code at the times *it* chooses (request handlers, lifecycle hooks, scheduled tasks); your agency is constrained to filling in the slots it provides. In a library, you call the framework when *you* need it; agency stays with your code. Curriculum is the framework calling you. Reaching for a Python library at 11pm because a feature won't work without it is you calling the framework. The locus of control is the topological fact. A real program uses both libraries and frameworks, just as a real life contains both pull-units and push-units \u2014 but no programmer would say the framework/library distinction is a continuum, and the pull/push one isn't either."
+  ],
+  [
+    "NARRATOR",
+    "The unambiguous push cases: a child in an algebra class with a syllabus, weekly homework, grades, and parental enforcement. A junior developer assigned a ticket about an authentication system they don't care about and have never thought about. A nurse fulfilling continuing-education credit requirements. A doo oh LING go streak driven by the green owl's notification and the social pressure of the leaderboard. A YouTube binge that started because the algorithm autoplayed three videos in a row on a topic the viewer did not seek out. In each of these the demand originates outside; the learner is responding to a request they did not author."
+  ],
+  [
+    "NARRATOR",
+    "The unambiguous pull cases: a kid who keeps drawing dinosaurs and starts asking which ones were carnivores and seeking out books to find out, with no adult having suggested the topic. A self-taught musician who hears a chord in a record and decides at midnight he must figure out what it was, then spends six hours reverse-engineering it. A working developer who notices that his test runs are slow and starts reading about pie test fixtures because the problem he wants to solve is sitting in front of him. A first-time parent who, in the absence of any external curriculum, starts compulsively reading about infant sleep because their own child won't. In each of these the demand originates inside; the learner generated the request and went looking."
+  ],
+  [
+    "NARRATOR",
+    "The unambiguous cases share a structural feature: the locus of the question is obvious. You can point at the moment the demand started, and it didn't come from a syllabus or a notification. That's the analytical edge."
+  ],
+  [
+    "NARRATOR",
+    "The genuinely hybrid cases are not \"30% pull, 70% push.\" They are sequenced compounds where push initiates and pull takes over (or doesn't), or where pull initiates and push provides the rigor pull alone wouldn't supply."
+  ],
+  [
+    "NARRATOR",
+    "The most common hybrid is **push-initiated, pull-sustained**. A kid is forced to take piano lessons; in lesson 47 something clicks and he starts staying after lessons to play things he chose. The first 46 lessons were push. Lesson 47 onward is pull. The hybrid is not in any single lesson; it is in the biographical arc. The topology cleanly handles this by saying: the unit of analysis is the unit of demand, and a single skill domain can host hundreds of demand-units of opposite type across a life."
+  ],
+  [
+    "NARRATOR",
+    "The second common hybrid is **pull-initiated, push-scaffolded**. Someone is genuinely pulled toward becoming a doctor \u2014 they have wanted to since age eight, the felt-sense pull is real, family pressure is incidental. But becoming a doctor requires twelve years of curriculum they would never have designed themselves, full of organic chemistry they don't care about and rotations through specialties they don't want. The pull initiated the project; the push fills in everything the pull alone would have skipped. This is the case Ivan Ill itch's deschoolers underweight \u2014 they treat pull as if it were sufficient. It usually isn't, for any sufficiently complex domain."
+  ],
+  [
+    "NARRATOR",
+    "The third hybrid is **counterfeit pull** \u2014 the case that looks like pull, feels like pull to the learner, but is actually push the learner has internalized so deeply they mistake it for their own desire. The Stanford CS major who chose CS because his immigrant parents valorized it and now genuinely feels he wants it. The hobbyist who is \"obsessed\" with a niche because the niche's community gave him belonging and the felt-sense of pull is the felt-sense of being seen, not the felt-sense of the topic. This case matters because the topology has to do real work distinguishing it from genuine pull, and it can't do that work from the inside \u2014 the learner's self-report won't discriminate. That is exactly what chapter 02's self-understanding variable is for."
+  ],
+  [
+    "NARRATOR",
+    "Notice the topology survives the hybrids without collapsing because *it isn't a claim about learners; it's a claim about demand-units*. A learner can be pulled in one stretch and pushed in the next without becoming a confusing third thing. Confusion only arises if you try to grade learners on the percentage of their lives spent in pull, which is exactly the move that turns the topology into a virtue-ethic and then into a self-help frame. Resist that move; the topology is descriptive, not aspirational."
+  ],
+  [
+    "NARRATOR",
+    "The pull/push distinction sits inside a much older and broader family of distinctions about where demand originates in any goal-directed system. It is worth naming the family, because the cousins will keep showing up."
+  ],
+  [
+    "NARRATOR",
+    "**Intrinsic vs extrinsic motivation** (Deci and Ryan, self-determination theory, since the 1970s). The psychological literature on what energizes behavior. Intrinsic motivation is doing something because the doing itself is rewarding; extrinsic is doing it for an outcome external to the doing (grades, money, approval). This is the closest cousin to pull/push and the most-cited one in the academic literature. It is *not* the same distinction. Intrinsic/extrinsic is about the *type of reward* that sustains behavior; pull/push is about the *origin of the demand*. They overlap heavily \u2014 most pull learning is intrinsically motivated, most push learning is extrinsically motivated \u2014 but they can dissociate. You can be intrinsically motivated to complete a pushed task (you genuinely enjoy solving the algebra problems your teacher assigned). You can be extrinsically motivated to follow a pull (you reach for the topic because it impresses your friends). The pull/push distinction is upstream of the reward question; it is about who is doing the asking."
+  ],
+  [
+    "NARRATOR",
+    "**Endogenous vs exogenous demand** (economics, control theory, systems biology). In economics, endogenous variables are determined inside the model; exogenous ones are inputs from outside. In a control system, an endogenous signal is generated by the system itself; an exogenous signal is imposed by the environment. This is the most architecturally clean way to describe pull/push and I think the right one for a Python developer's ear. Pull learning is endogenous-demand learning; push learning is exogenous-demand learning. The reason I keep using \"demand\" as the noun rather than \"motivation\" is to flag this lineage \u2014 motivation is a psychology word that drags reward-theory baggage; demand is a systems word and the topology is fundamentally a systems claim."
+  ],
+  [
+    "NARRATOR",
+    "**Bottom-up vs top-down learning** (cognitive science, ML). Bottom-up: the learner builds models from local data and the abstractions emerge. Top-down: the learner is given the abstractions and finds instances. This overlaps with pull/push but is doing a different job \u2014 it's about the direction of inference, not the origin of demand. Constructionism is bottom-up *and* pull-shaped, and the two are often conflated, but separable. You can do top-down pull learning (encounter a powerful abstraction in a book and reach to apply it) and bottom-up push learning (a curriculum makes you build things in sequence to discover principles)."
+  ],
+  [
+    "NARRATOR",
+    "**Self-directed vs other-directed** (Noles, an druh GOH jee). Pull/push under another name, now largely domesticated by corporate L&D to mean \"do the e-learning module on your own time.\" A dialect to be wary of."
+  ],
+  [
+    "NARRATOR",
+    "**Interest-led** (the homeschooling and progressive-education dialect). Same animal, smaller vocabulary. The weakness of \"interest-led\" is that *interest* is light \u2014 a child can be interested in a hundred things in an afternoon \u2014 and the term lacks the gravitational sense that \"pull\" has. When you say \"this topic is pulling at me,\" you mean something with mass; when you say \"I'm interested in that,\" you mean something you could put down without missing. That grade is the felt-sense distinction chapter 01 develops."
+  ],
+  [
+    "NARRATOR",
+    "**Constructionism** (Pay pert, *Mind storms*, 1980; the LOH go and Scratch lineage). Pull-as-making, with a strong further claim that pull is most powerful when the learner is constructing public artifacts. A specialization of the topology toward the buildable. Pull learning encompasses constructionism but isn't limited to it \u2014 taste cultivation, contemplative practice, and relational learning are pull-shaped without being constructionist."
+  ],
+  [
+    "NARRATOR",
+    "The right summary: pull/push is a distinction about **the origin of demand in a goal-directed learning system**, and it has been named under at least a half-dozen vocabularies across psychology, education, economics, and cognitive science. The vocabularies disagree on what's important about the distinction (psychology cares about reward; economics cares about model boundaries; constructionism cares about artifacts; unschooling cares about institutional critique) but they're carving at roughly the same joint. Your working intuition that they're \"pointing at the same animal under different names\" is mostly right. The exception is constructionism, which adds a specific claim about artifacts that the bare topology doesn't make."
+  ],
+  [
+    "NARRATOR",
+    "The hook is whether \"pull learning\" is a single topology that holds across radically different domains \u2014 formal academic content, embodied skill, taste cultivation, relational learning, contemplative practice \u2014 or whether it fragments into several non-equivalent things once you look closely."
+  ],
+  [
+    "NARRATOR",
+    "I want to argue: the topology is single at the level of demand-origin, but the *mechanism by which pull operates* fragments along at least three axes that matter for how chapters 02 and 04 should think about variables and infrastructure."
+  ],
+  [
+    "NARRATOR",
+    "**Axis one: the type of artifact pull produces.** Pull toward Python produces code \u2014 a public, runnable, testable artifact. Pull toward a particular question in philosophy produces an internal change in how you see things \u2014 no external artifact unless you write. Pull toward a contemplative practice produces neither an artifact nor (usually) a verbalizable change; it produces a different relationship to your own attention. Pull toward your wife produces a relationship that you sustain over decades and that has no completion state. The infrastructure that materializes pull (chapter 04's concern) has to look radically different for these four cases. A ZET ul kass ten serves the second one beautifully and the others poorly. A daily musical practice with recordings serves the first and the fourth in a strange refracted way. There is no general-purpose pull infrastructure; there are domain-specific instantiations."
+  ],
+  [
+    "NARRATOR",
+    "**Axis two: the time-scale of the felt-sense signal.** In some domains \u2014 code, music, writing \u2014 pull operates at the scale of hours or minutes. You feel pulled toward fixing this bug *right now*, and the pull is dischargeable in a single session. In other domains \u2014 a marriage, a homeschooling project, a life-direction question \u2014 pull operates at the scale of years or decades. The felt-sense is not \"I want to do this thing now\"; it is \"this is the river I'm in, and I keep returning to it across moods and circumstances.\" Both are pull. But the chapter 02 variables look different in each. Effort calibration on a Tuesday afternoon (\"which of three pulled tasks gets the next two hours\") is a different cognitive operation from effort calibration on a five-year horizon (\"which of three pulled life-directions gets my next decade\")."
+  ],
+  [
+    "NARRATOR",
+    "**Axis three: the social/relational density of the domain.** Some pull is solitary: I am pulled toward learning a thing, and the thing doesn't care whether I learn it. Other pull is constitutively relational: I am pulled toward understanding my wife, and \"the thing\" is a person whose own pulls and pushes are part of the data. Pull toward your children is the strongest case of relational pull \u2014 the object of the pull is itself a pulling and pushing entity. The witnessing problem chapter 05 is going to deal with is a problem that arises *only* in the high-relational-density case. It doesn't arise when you're pulled toward Lisp."
+  ],
+  [
+    "NARRATOR",
+    "So the topology is one thing \u2014 demand-origin endogenous vs exogenous \u2014 and the *operation* of pull is several things, fragmenting along artifact-type, time-scale, and relational-density. The framing of pull as a single topology survives; the temptation to treat all pull as if it operated mechanically the same way does not. Chapter 02's variables theory has to be flexible enough to fit a six-hour deep-dive into pie test fixtures and a thirty-year marriage. If it isn't, it has factored the problem wrong."
+  ],
+  [
+    "NARRATOR",
+    "Three things follow that the later chapters need to inherit."
+  ],
+  [
+    "NARRATOR",
+    "First, when chapters 01 and 02 are talking about \"the felt sense of pull\" or \"the variables that make pull work,\" they are talking about a topology that operates differently across artifact-type, time-scale, and relational-density. The variables are general; their cashing-out is domain-specific. Effort calibration on a coding question is wall-clock calibration; effort calibration on a marriage is decade-scale fidelity calibration. They are the same variable doing different work in different domains, not three different variables that happen to share a name."
+  ],
+  [
+    "NARRATOR",
+    "Second, the counterfeit-pull case is not a small or rare problem. It is the central reason the topology matters at all. The whole *point* of distinguishing pull from push, beyond cute terminology, is that the third case \u2014 push that has been internalized so deeply the learner can't tell the difference \u2014 is genuinely common, especially in adults who came up under heavy push regimes (formal schooling, family expectations, career narratives). The chapter 02 self-understanding variable is the discriminator; without it, \"pull learning\" devolves into the worst kind of self-help \u2014 \"follow your bliss\" applied to a self that was constructed by external demands and now mistakes its own conditioning for its own desire."
+  ],
+  [
+    "NARRATOR",
+    "Third, the topology is descriptive, not aspirational. It is *not* the case that pull learning is better than push learning. Push is what allows complex domains to be learned at all in finite time; push is how you got the foundational reading, writing, and arithmetic that any later pull operates on; push is how an apprentice gets the rote skills that make taste cultivation possible. The arc will be tempted, repeatedly, to slide from \"pull is structurally distinct from push\" into \"pull is better than push and you should do more of it.\" That slide is what turns a useful distinction into a marketing slogan. Resist it."
+  ],
+  [
+    "NARRATOR",
+    "What pull is, when it is working, is the *necessary* but not *sufficient* condition for learning to compound across a life. Push can teach you anything in a discrete window; only pull stitches the discrete windows into a trajectory, because only pull originates in the learner and can therefore persist across changes in environment, employer, curriculum, and life-stage. A person whose entire learning has been push-shaped stops learning when the push stops. The bet of the arc is that the surrounding institutions \u2014 algorithmically curated content, employer-defined careers, curriculum-defined education \u2014 are themselves becoming less reliable as push-vehicles, and the capacity to operate pull is therefore load-bearing in a way it wasn't fifty years ago. But that is a claim about strategic value, not intrinsic superiority. They are different mechanisms with different jobs."
+  ],
+  [
+    "NARRATOR",
+    "Pull learning: a learning process in which the demand for what is learned originates endogenously \u2014 in the learner's felt-sense recognition that there is a question, gap, or skill they are reaching to address \u2014 and the institutional environment supplies (or fails to supply) the resources the learner has requested."
+  ],
+  [
+    "NARRATOR",
+    "Push learning: a learning process in which the demand for what is learned originates exogenously \u2014 from a curriculum, algorithm, employer, social pressure, or other external source \u2014 and the learner's task is to absorb, perform absorption, or comply."
+  ],
+  [
+    "NARRATOR",
+    "Pull and push are distinct mechanisms. A given learner's biography contains both, often interleaved within a single domain. The hybrids resolve cleanly once you treat the unit of analysis as the demand-unit rather than the learner. Whether pull produces depth or churn is a separate question \u2014 answered by the variables developed in chapter 02. Whether the institutional environment can support pull at scale is a separate question still \u2014 taken up by the lineage chapter and the family chapter. Whether the felt-sense of pull is itself reliable, or counterfeitable, or trainable, is taken up by the phenomenology chapter."
+  ],
+  [
+    "NARRATOR",
+    "That's the topology. From here, the question stops being \"what is pull learning\" and becomes \"given that it exists as a distinct mechanism, what makes it work, when does it fail, and what would it take to do it deliberately.\" Those are the questions the rest of the arc is for."
+  ]
+]

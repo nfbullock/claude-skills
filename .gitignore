@@ -3,5 +3,6 @@
 # next to itself lands in this repo's working tree — keep it out of git.
 skills/*/transcripts/
 skills/*/.cache/
+skills/*/node_modules/
 *.pre-sync.bak
 .DS_Store
