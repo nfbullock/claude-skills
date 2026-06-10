@@ -1,6 +1,7 @@
 ---
 name: sync-skills
 description: Sync this host's Claude skills from the cross-host skills repo — pull the latest manifest and skill content, link/unlink skills per this host's manifest entry, and report what changed. Invoke when Nick says "sync skills", asks why a skill is missing/outdated on this machine, or wants to add/remove a skill from a host or category.
+status: active
 ---
 
 # sync-skills

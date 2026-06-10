@@ -2,9 +2,16 @@
 """
 scan.py — Claude skills status scan.
 
-Walks projects/claude_skills/*/SKILL.md, reads frontmatter, buckets each skill
+Walks <skills repo>/skills/*/SKILL.md, reads frontmatter, buckets each skill
 by status. Stubs always show; stubs past the staleness threshold yell louder.
 SKILL.md files without a status field are surfaced as needing retrofit.
+
+Lives inside the skills repo, so the scan root is derived from this file's
+own (symlink-resolved) location — works on any host, any clone path.
+Staleness comes from git history (last commit touching the skill), not
+mtime, because mtimes reset on clone; uncommitted edits count as touched
+today and are flagged dirty. Each skill also reports its manifest category;
+None means uncategorized — no host will ever receive it.
 
 Output: JSON to stdout. The /skills-status skill formats it for Nick.
 """
@@ -14,12 +21,46 @@ import argparse
 import difflib
 import json
 import re
+import subprocess
 import sys
 import time
 from pathlib import Path
 
-SKILLS_ROOT = Path("/Users/dad/Documents/sandbox/projects/claude_skills")
+SKILLS_ROOT = Path(__file__).resolve().parent.parent
+REPO = SKILLS_ROOT.parent
 STALE_STUB_DAYS = 30
+
+
+def manifest_categories() -> dict[str, str]:
+    """skill name -> category, from the repo manifest."""
+    try:
+        manifest = json.loads((REPO / "manifest.json").read_text())
+    except (OSError, ValueError):
+        return {}
+    return {
+        name: cat
+        for cat, names in manifest.get("categories", {}).items()
+        for name in names
+    }
+
+
+def last_touched(skill_dir: Path) -> tuple[float, bool]:
+    """(days since last change, has uncommitted edits) — git-based, with an
+    mtime fallback for content git doesn't know yet."""
+    rel = str(skill_dir.relative_to(REPO))
+    dirty = subprocess.run(
+        ["git", "-C", str(REPO), "status", "--porcelain", "--", rel],
+        capture_output=True, text=True,
+    ).stdout.strip() != ""
+    if dirty:
+        return 0.0, True
+    ts = subprocess.run(
+        ["git", "-C", str(REPO), "log", "-1", "--format=%ct", "--", rel],
+        capture_output=True, text=True,
+    ).stdout.strip()
+    if ts:
+        return round((time.time() - int(ts)) / 86400, 1), False
+    return round((time.time() - newest_mtime(skill_dir)) / 86400, 1), False
 
 
 def parse_frontmatter(skill_md: Path) -> dict | None:
@@ -54,8 +95,8 @@ def newest_mtime(path: Path) -> float:
 
 
 def scan() -> dict:
-    now = time.time()
     skills = []
+    categories = manifest_categories()
 
     for skill_dir in sorted(SKILLS_ROOT.iterdir()):
         if not skill_dir.is_dir():
@@ -69,6 +110,7 @@ def scan() -> dict:
             "status": None,
             "bucket": None,
             "days_since_touched": None,
+            "category": categories.get(skill_dir.name),
         }
 
         if not skill_md.exists():
@@ -77,8 +119,9 @@ def scan() -> dict:
             continue
 
         fm = parse_frontmatter(skill_md)
-        days = round((now - newest_mtime(skill_dir)) / 86400, 1)
+        days, dirty = last_touched(skill_dir)
         entry["days_since_touched"] = days
+        entry["dirty"] = dirty
 
         if fm is None:
             entry["bucket"] = "no_frontmatter"
@@ -211,13 +254,15 @@ def scan_single_skill(name: str) -> dict:
     skill_md = skill_dir / "SKILL.md"
     fm = parse_frontmatter(skill_md) or {}
     classification = classify_skill(skill_dir)
-    days = round((time.time() - newest_mtime(skill_dir)) / 86400, 1)
+    days, dirty = last_touched(skill_dir)
     payload.update({
         "skill": resolved,
         "route": classification["route"],
         "confidence": classification["confidence"],
         "reasons": classification["reasons"],
         "days_since_touched": days,
+        "dirty": dirty,
+        "category": manifest_categories().get(resolved),
         "frontmatter": fm,
         "skill_md_text": file_text(skill_md),
         "file_listing": file_listing(skill_dir),

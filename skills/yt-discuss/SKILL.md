@@ -1,6 +1,7 @@
 ---
 name: yt-discuss
 description: Pull down a YouTube transcript (creator subs preferred, local Whisper STT fallback), load it into context, then give a one-line verdict + 2–4 reactions on the video and ask Nick what he wants to talk about. Invoke when Nick shares a YouTube URL with intent to discuss it, or when the legacy yt-chat script hands you a pre-fetched transcript path.
+status: active
 ---
 
 # yt-discuss

@@ -18,20 +18,19 @@
   },
   "categories": {
     "core": [
+      "gemini-prompt",
+      "push-notify",
+      "skills-status",
       "sync-skills"
     ],
     "work": [],
     "personal": [
-      "yt-discuss",
-      "things",
-      "push-notify",
       "soup-recipe"
     ],
     "studio-only": [
       "apple-music-playlist",
       "cover-common",
       "cover-deconstruct",
-      "gemini-prompt",
       "mindmap",
       "model-check",
       "money",
@@ -41,10 +40,11 @@
       "reaper",
       "recording-watcher",
       "research",
-      "skills-status",
       "skylight-calendar",
       "song-recipe",
-      "tts"
+      "things",
+      "tts",
+      "yt-discuss"
     ]
   },
   "hosts": {

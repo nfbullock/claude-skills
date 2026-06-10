@@ -34,7 +34,7 @@ new:            ## scaffold a skill: make new NAME=foo (then categorize + save)
 	@test -n "$(NAME)" || { echo "usage: make new NAME=<skill-name>"; exit 1; }
 	@test ! -e skills/$(NAME) || { echo "skills/$(NAME) already exists"; exit 1; }
 	@mkdir -p skills/$(NAME)
-	@printf -- '---\nname: $(NAME)\ndescription: TODO — one line on what this does and when to invoke it.\n---\n\n# $(NAME)\n\nTODO\n' > skills/$(NAME)/SKILL.md
+	@printf -- '---\nname: $(NAME)\ndescription: TODO — one line on what this does and when to invoke it.\nstatus: stub\n---\n\n# $(NAME)\n\nTODO\n' > skills/$(NAME)/SKILL.md
 	@echo "created skills/$(NAME)/SKILL.md — next: make categorize SKILLS=$(NAME), then make save"
 
 .PHONY: help sync status bootstrap adopt categorize drift save new

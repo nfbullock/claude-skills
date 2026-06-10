@@ -1,6 +1,6 @@
 ---
 name: skills-status
-description: Lightweight status scan over Nick's Claude skills directory (projects/claude_skills/). Reads SKILL.md frontmatter for each skill, buckets by status (active / stub / stale stub / deprecated / no metadata), and surfaces stubs that haven't moved past the staleness threshold. Invoke as /skills-status for the sweep, or `/skills-status <skill>` to scope a single-skill conversation that auto-routes to bootstrap / develop / refine / cleanup. Sibling to /projects-status — same shape, different domain.
+description: Lightweight status scan over the centralized skills repo (the cross-host home of all Claude skills). Reads SKILL.md frontmatter for each skill, buckets by status (active / stub / stale stub / deprecated / no metadata), surfaces stubs that haven't moved past the staleness threshold, and shows each skill's manifest category (uncategorized = no host receives it). Invoke as /skills-status for the sweep, or `/skills-status <skill>` to scope a single-skill conversation that auto-routes to bootstrap / develop / refine / cleanup. Sibling to /projects-status — same shape, different domain.
 status: active
 ---
 
@@ -10,9 +10,12 @@ Status check for the skills ecosystem. Active skills stay quiet; stubs that have
 
 ## What this skill does
 
-1. Walks `projects/claude_skills/*/SKILL.md`.
-2. Reads frontmatter (`name`, `status`, `description`).
-3. Computes newest mtime in each skill dir → `days_since_touched`.
+1. Walks `<skills repo>/skills/*/SKILL.md` (the scan script lives in the
+   repo and derives the root from its own location — no host paths).
+2. Reads frontmatter (`name`, `status`, `description`) and each skill's
+   manifest category.
+3. Computes `days_since_touched` from git history (last commit touching the
+   skill); uncommitted edits count as today and set `dirty: true`.
 4. Buckets each skill:
    - **active** — `status: active`. Working skill. Show count + name only, no fuss.
    - **stub** — `status: stub`, touched within threshold. Surface so it stays on radar.
@@ -23,10 +26,12 @@ Status check for the skills ecosystem. Active skills stay quiet; stubs that have
 
 ## How to invoke
 
-When Nick types `/skills-status`, run the scan and report.
+When Nick types `/skills-status`, run the scan and report. The repo path is
+in `~/.claude/skills-sync.json` (key `repo`); the scanner is stdlib-only, so
+plain `python3` works on any host:
 
 ```bash
-~/venv/default/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/skills-status/scan.py
+python3 "<repo>/skills/skills-status/scan.py"
 ```
 
 It prints JSON. Format the output for Nick like this (terse, scannable):
@@ -74,7 +79,7 @@ When Nick invokes the skill with an arg, scope the conversation to that one skil
 Run the scan with the target as a positional arg:
 
 ```bash
-~/venv/default/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/skills-status/scan.py "<skill name>"
+python3 "<repo>/skills/skills-status/scan.py" "<skill name>"
 ```
 
 Returns:
@@ -103,7 +108,7 @@ If `confidence: confident`, announce in one line and proceed. If `borderline`, n
 Nick is starting a new skill.
 
 1. Ask: what does the skill do, in one sentence? What triggers it (slash command only, or natural-language phrasing)? Does it need a `scan.py` / helper, or is it pure prose?
-2. Create `claude_skills/<name>/` and write a minimal `SKILL.md` with frontmatter:
+2. Create `<repo>/skills/<name>/` (`make new NAME=<name>` scaffolds it) and write a minimal `SKILL.md` with frontmatter:
    ```yaml
    ---
    name: <name>
@@ -113,7 +118,8 @@ Nick is starting a new skill.
    ```
    plus a "What this skill does" stub body and a "Files" footer.
 3. If a helper is needed, create an empty `scan.py` (or equivalent) so the directory has the shape the skill will eventually have.
-4. Remind Nick the skill is a `stub` — it'll surface in `/skills-status` until status flips to `active`.
+4. Add the skill to a manifest category (`bin/categorize <name>` or edit `manifest.json`) — uncategorized skills install nowhere — then commit and run sync.
+5. Remind Nick the skill is a `stub` — it'll surface in `/skills-status` until status flips to `active`.
 
 #### Route: `bootstrap` (directory exists, SKILL.md missing or no frontmatter)
 
