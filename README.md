@@ -52,12 +52,15 @@ fold them in).
 
 ```sh
 git clone <this repo> && cd <repo>
-bin/skills-sync bootstrap
+bin/skills-sync bootstrap            # prompts for device class if host is new
+bin/skills-sync bootstrap --class dev-box   # non-interactive
 ```
 
-Bootstrap records the repo path in `~/.claude/skills-sync.json` and applies
-the manifest. If the host isn't in the manifest yet, it prints the JSON entry
-to add — add it, commit, rerun.
+Bootstrap records the repo path in `~/.claude/skills-sync.json`. If the host
+(keyed by `hostname -s`) isn't in the manifest, it registers it under the
+chosen device class — the `classes` block maps class → categories — commits
+the manifest change, pushes so the other machines see it, and installs.
+Mac and Linux only; no Windows handling.
 
 ## Day to day
 

@@ -1,4 +1,9 @@
 {
+  "classes": {
+    "work-laptop": ["core", "work"],
+    "dev-box": ["core", "work", "personal"],
+    "studio": ["core", "work", "personal", "studio-only"]
+  },
   "categories": {
     "core": [
       "sync-skills"

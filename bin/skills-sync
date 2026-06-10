@@ -7,8 +7,9 @@ manifest.json: each host lists categories (unioned) plus add/remove overrides.
 
 Subcommands:
   bootstrap   First run on a new host: record repo path in
-              ~/.claude/skills-sync.json, verify this host is in the
-              manifest, then apply (no git pull).
+              ~/.claude/skills-sync.json; if the host is unknown, register
+              it under a device class (--class or interactive prompt),
+              commit, and push; then apply (no git pull).
   sync        git pull --ff-only, then apply the manifest. The day-to-day
               command; also what the sync-skills meta-skill runs.
   status      Show desired vs installed vs unmanaged, no changes.
@@ -182,12 +183,52 @@ def report(linked, removed, warnings):
         print("up to date")
 
 
-def registration_help(host):
+def registration_help(host, manifest):
+    classes = ", ".join(sorted(manifest.get("classes", {})))
     return (
-        "host %r is not in manifest.json. Add an entry like:\n\n"
-        '  "%s": {"categories": ["core"], "add": [], "remove": []}\n\n'
-        "under \"hosts\" in %s, commit, then rerun." % (host, host, MANIFEST)
+        "host %r is not in manifest.json. Run:\n\n"
+        "  bin/skills-sync bootstrap --class <%s>\n\n"
+        "to register it, or add a \"hosts\" entry in %s by hand." % (host, classes, MANIFEST)
     )
+
+
+def pick_class(manifest):
+    classes = sorted(manifest.get("classes", {}))
+    if not classes:
+        fail("manifest.json has no \"classes\" block to register hosts from")
+    if not sys.stdin.isatty():
+        return None
+    print("Register this host as which device class?")
+    for i, name in enumerate(classes, 1):
+        print("  %d) %-12s -> %s" % (i, name, ", ".join(manifest["classes"][name])))
+    choice = input("class [1-%d or name]: " % len(classes)).strip()
+    if choice.isdigit() and 1 <= int(choice) <= len(classes):
+        return classes[int(choice) - 1]
+    return choice if choice in classes else None
+
+
+def register_host(manifest, host, device_class):
+    classes = manifest.get("classes", {})
+    if device_class not in classes:
+        fail("unknown class %r (have: %s)" % (device_class, ", ".join(sorted(classes))))
+    manifest.setdefault("hosts", {})[host] = {
+        "categories": list(classes[device_class]),
+        "add": [],
+        "remove": [],
+    }
+    with open(MANIFEST, "w") as f:
+        json.dump(manifest, f, indent=2)
+        f.write("\n")
+    subprocess.run(["git", "-C", REPO, "add", "manifest.json"], check=True)
+    subprocess.run(
+        ["git", "-C", REPO, "commit", "-q", "-m",
+         "Register host %s (%s)" % (host, device_class)],
+        check=True,
+    )
+    print("registered host %r as %s and committed" % (host, device_class))
+    push = subprocess.run(["git", "-C", REPO, "push"], capture_output=True, text=True)
+    if push.returncode != 0:
+        print("push failed (no remote yet?) — push manually so other hosts see this one")
 
 
 def cmd_bootstrap(args):
@@ -195,7 +236,11 @@ def cmd_bootstrap(args):
     manifest = load_manifest()
     desired = desired_skills(manifest, host)
     if desired is None:
-        fail(registration_help(host))
+        device_class = args.device_class or pick_class(manifest)
+        if not device_class:
+            fail(registration_help(host, manifest))
+        register_host(manifest, host, device_class)
+        desired = desired_skills(manifest, host)
     write_state(host)
     print("registered repo %s for host %r in %s" % (REPO, host, STATE_FILE))
     report(*apply_manifest(desired, args.adopt))
@@ -209,7 +254,7 @@ def cmd_sync(args):
     manifest = load_manifest()
     desired = desired_skills(manifest, host)
     if desired is None:
-        fail(registration_help(host))
+        fail(registration_help(host, manifest))
     write_state(host)
     report(*apply_manifest(desired, args.adopt))
     candidates_report(desired)
@@ -220,7 +265,7 @@ def cmd_status(_args):
     manifest = load_manifest()
     desired = desired_skills(manifest, host)
     if desired is None:
-        fail(registration_help(host))
+        fail(registration_help(host, manifest))
     state = installed_state()
     print("host: %s" % host)
     print("repo: %s" % REPO)
@@ -248,6 +293,9 @@ def main():
         p.add_argument("--adopt", action="store_true")
         if name == "sync":
             p.add_argument("--no-pull", action="store_true")
+        if name == "bootstrap":
+            p.add_argument("--class", dest="device_class",
+                           help="device class to register a new host as")
         p.set_defaults(func=func)
     args = parser.parse_args()
     args.func(args)
