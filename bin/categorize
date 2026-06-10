@@ -1,0 +1,156 @@
+#!/usr/bin/env python3
+"""Interactive pass to put each skill in the right manifest category.
+
+For every skill in <repo>/skills/ (or just the names passed as arguments),
+shows its description, its current category, and portability signals scanned
+from its files — hardcoded /Users paths, ~/venv dependencies, projects/ tree
+references, launchd/hardware hooks — then asks where it belongs. A skill
+lives in exactly one category; assigning moves it.
+
+Keys at the prompt: a number picks a category, Enter keeps the current one,
+s skips, q quits (changes so far are kept). Writes manifest.json at the end
+and reminds you to commit/push/sync — it does not touch git itself.
+
+Stdlib only, same constraint as skills-sync.
+"""
+
+import json
+import os
+import re
+import sys
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(os.path.realpath(__file__))))
+SKILLS_SRC = os.path.join(REPO, "skills")
+MANIFEST = os.path.join(REPO, "manifest.json")
+
+SIGNALS = [
+    ("abs-paths", re.compile(r"/Users/\w+")),
+    ("venv", re.compile(r"~/venv|/venv/")),
+    ("projects-tree", re.compile(r"projects/(?!\s)")),
+    ("launchd/watcher", re.compile(r"launchd|launchctl|fswatch", re.I)),
+    ("hardware/local", re.compile(r"printer|print to|mlx|local model|iCloud|icloud", re.I)),
+    ("node", re.compile(r"node_modules|package\.json")),
+]
+
+
+def skill_description(path):
+    skill_md = os.path.join(path, "SKILL.md")
+    if not os.path.isfile(skill_md):
+        return "(no SKILL.md)"
+    with open(skill_md, errors="replace") as f:
+        for line in f:
+            if line.startswith("description:"):
+                return line.split(":", 1)[1].strip()
+    return "(no description)"
+
+
+def portability_signals(path):
+    hits = {}
+    for root, dirs, files in os.walk(path):
+        dirs[:] = [d for d in dirs if d not in ("node_modules", ".git", "transcripts", ".cache")]
+        for fn in files:
+            fp = os.path.join(root, fn)
+            if os.path.getsize(fp) > 512 * 1024:
+                continue
+            try:
+                with open(fp, errors="replace") as f:
+                    text = f.read()
+            except OSError:
+                continue
+            for name, rx in SIGNALS:
+                if rx.search(text):
+                    hits.setdefault(name, set()).add(os.path.relpath(fp, path))
+    return {name: sorted(files) for name, files in hits.items()}
+
+
+def current_category(manifest, name):
+    for cat, skills in manifest["categories"].items():
+        if name in skills:
+            return cat
+    return None
+
+
+def wrap(text, width=76, indent="    "):
+    words, lines, line = text.split(), [], ""
+    for w in words:
+        if line and len(line) + len(w) + 1 > width:
+            lines.append(line)
+            line = w
+        else:
+            line = (line + " " + w).strip()
+    if line:
+        lines.append(line)
+    return "\n".join(indent + l for l in lines)
+
+
+def main():
+    if not sys.stdin.isatty():
+        print("error: interactive script — run it from a terminal", file=sys.stderr)
+        sys.exit(1)
+    with open(MANIFEST) as f:
+        manifest = json.load(f)
+    cats = sorted(manifest["categories"])
+
+    names = sys.argv[1:] or sorted(
+        n for n in os.listdir(SKILLS_SRC) if os.path.isdir(os.path.join(SKILLS_SRC, n))
+    )
+    for n in names:
+        if not os.path.isdir(os.path.join(SKILLS_SRC, n)):
+            print("error: no such skill %r" % n, file=sys.stderr)
+            sys.exit(1)
+
+    moves = []
+    for idx, name in enumerate(names, 1):
+        path = os.path.join(SKILLS_SRC, name)
+        cur = current_category(manifest, name)
+        print("\n[%d/%d] %s   (current: %s)" % (idx, len(names), name, cur or "UNCATEGORIZED"))
+        print(wrap(skill_description(path)))
+        signals = portability_signals(path)
+        if signals:
+            for sig, files in sorted(signals.items()):
+                shown = ", ".join(files[:3]) + (" …" if len(files) > 3 else "")
+                print("    signal: %-16s %s" % (sig, shown))
+        else:
+            print("    signal: none found — looks portable")
+
+        menu = "  ".join("%d=%s" % (i, c) for i, c in enumerate(cats, 1))
+        while True:
+            choice = input("  %s  [Enter=keep, s=skip, q=quit]: " % menu).strip().lower()
+            if choice == "q":
+                idx = None
+                break
+            if choice in ("", "s"):
+                break
+            new = None
+            if choice.isdigit() and 1 <= int(choice) <= len(cats):
+                new = cats[int(choice) - 1]
+            elif choice in cats:
+                new = choice
+            if new is None:
+                print("  ?")
+                continue
+            if new != cur:
+                if cur:
+                    manifest["categories"][cur].remove(name)
+                manifest["categories"][new].append(name)
+                manifest["categories"][new].sort()
+                moves.append("%s: %s -> %s" % (name, cur or "(none)", new))
+            break
+        if idx is None:
+            break
+
+    if not moves:
+        print("\nno changes")
+        return
+    with open(MANIFEST, "w") as f:
+        json.dump(manifest, f, indent=2)
+        f.write("\n")
+    print("\nwrote manifest.json:")
+    for m in moves:
+        print("  " + m)
+    print("\nnext: git add manifest.json && git commit && git push, then skills-sync sync")
+    print("(or just tell Claude: sync skills)")
+
+
+if __name__ == "__main__":
+    main()
