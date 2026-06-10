@@ -13,7 +13,7 @@ Send a push to Nick's phone via **ntfy**. General-purpose: any project can call 
 
 ## Invocation
 ```bash
-~/venv/default/bin/python \
+~/.claude/skills-venv/bin/python \
   /Users/dad/Documents/sandbox/projects/claude_skills/push-notify/scripts/send.py \
   --title "Render done" --message "The dahlias batch finished" [--click "<url>"] [--tags "white_check_mark"]
 ```

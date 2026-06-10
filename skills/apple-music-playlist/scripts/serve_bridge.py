@@ -1,6 +1,6 @@
 """One-shot local server for capturing the Music User Token (MUT).
 
-Usage: ~/venv/default/bin/python serve_bridge.py
+Usage: ~/.claude/skills-venv/bin/python serve_bridge.py
 Then open http://localhost:8765 in Safari (handles Apple ID auth most reliably).
 """
 import json

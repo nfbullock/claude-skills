@@ -13,7 +13,7 @@ Pulls today's Things 3 items, formats as a minimal printable sheet, sends to the
 When Nick types `/print-today`:
 
 ```bash
-~/venv/default/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/print-today/print_today.py
+~/.claude/skills-venv/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/print-today/print_today.py
 ```
 
 Add `--dry-run` to preview the formatted sheet in the terminal without sending to the printer.

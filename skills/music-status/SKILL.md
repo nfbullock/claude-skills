@@ -22,7 +22,7 @@ It is **read-only**. It never generates a lesson, never edits a track file, neve
 ## How to invoke
 
 ```bash
-~/venv/default/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/music-status/scan.py --json
+~/.claude/skills-venv/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/music-status/scan.py --json
 ```
 
 (Drop `--json` for a quick human-readable dump if you just want to eyeball it without Claude formatting.)

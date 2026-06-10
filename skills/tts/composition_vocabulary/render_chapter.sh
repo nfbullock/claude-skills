@@ -4,7 +4,7 @@ set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RENDERER_DIR="$(cd "$PROJECT_DIR/../renderer" && pwd)"
-VENV="$HOME/venv/tts"
+VENV="$HOME/.claude/skills-venv"
 
 NAME="${1:?usage: ./render_chapter.sh chapter_NN_slug}"
 VOICE="en-Mike_man"

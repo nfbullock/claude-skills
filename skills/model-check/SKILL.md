@@ -31,7 +31,7 @@ symlink to it.
 
 ## Interactive run (Nick typed /model-check)
 
-1. `~/venv/default/bin/python <this>/scripts/model_watcher.py --print-context`
+1. `~/.claude/skills-venv/bin/python <this>/scripts/model_watcher.py --print-context`
    → JSON with `hardware`, `envelope`, per-domain `inventory`, the curated
    `domains` source list, and the last-saved `state`.
 2. For each requested domain, do the research **yourself** with WebSearch/WebFetch,

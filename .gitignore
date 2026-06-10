@@ -4,5 +4,6 @@
 skills/*/transcripts/
 skills/*/.cache/
 skills/*/node_modules/
+.venv/
 *.pre-sync.bak
 .DS_Store

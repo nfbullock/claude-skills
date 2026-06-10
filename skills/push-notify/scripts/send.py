@@ -2,8 +2,8 @@
 """Entry point: push a notification to Nick's phone via ntfy.
 
 Usage:
-  ~/venv/default/bin/python send.py --title "Render done" --message "Dahlias batch finished"
-  ~/venv/default/bin/python send.py --title "Dahlia's song session" \
+  ~/.claude/skills-venv/bin/python send.py --title "Render done" --message "Dahlias batch finished"
+  ~/.claude/skills-venv/bin/python send.py --title "Dahlia's song session" \
       --message "Her take on 'Here Comes the Sun' is ready" --click "obsidian://..." --tags "musical_note"
 """
 import argparse

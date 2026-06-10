@@ -5,7 +5,7 @@ set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RENDERER_DIR="$(cd "$PROJECT_DIR/../renderer" && pwd)"
-VENV="$HOME/venv/tts"
+VENV="$HOME/.claude/skills-venv"
 
 NAME="episode"
 HOST_VOICE="en-Mike_man"

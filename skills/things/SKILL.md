@@ -55,7 +55,7 @@ If a phrase is ambiguous (Nick said "I should …" rather than "add this"), conf
 ## Capture path
 
 ```bash
-~/venv/default/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/things/things.py add \
+~/.claude/skills-venv/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/things/things.py add \
     --title "..." [--when today|tomorrow|anytime|someday|YYYY-MM-DD] \
     [--deadline YYYY-MM-DD] [--notes "..."] [--dry-run]
 ```
@@ -77,7 +77,7 @@ Trigger: "help me organize my inbox," "let's triage," "process my captures."
 
 1. **Pull the pile**:
    ```bash
-   ~/venv/default/bin/python .../things.py inbox
+   ~/.claude/skills-venv/bin/python .../things.py inbox
    ```
 2. **Read every item**. Don't dump the JSON to Nick — synthesize.
 3. **For each item, propose ONE of three dispositions**:
@@ -143,7 +143,7 @@ The workflow's contract: **a discussion always produces (a) a modification of th
 
 1. **Find the task.**
    ```bash
-   ~/venv/default/bin/python .../things.py search "<keywords from Nick's phrasing>"
+   ~/.claude/skills-venv/bin/python .../things.py search "<keywords from Nick's phrasing>"
    ```
    If multiple matches, list them and ask which. If zero matches, broaden the query or ask Nick for more.
 
@@ -167,7 +167,7 @@ The workflow's contract: **a discussion always produces (a) a modification of th
    - **Update tags / project** if the conversation changed where it belongs.
 
    ```bash
-   ~/venv/default/bin/python .../things.py update --id <UUID> \
+   ~/.claude/skills-venv/bin/python .../things.py update --id <UUID> \
      --title "<rewritten title>" \
      --add-notes "<conversation kernel>" \
      --tag <ctx1> --tag <ctx2>
@@ -198,7 +198,7 @@ The vault is canonical for "what should I work on in this project." Things is ju
 All commands print JSON. Path:
 
 ```
-~/venv/default/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/things/things.py <cmd>
+~/.claude/skills-venv/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/things/things.py <cmd>
 ```
 
 **Read** (sqlite, read-only — fast, no permission prompt, may lag in-app edits by a few seconds):

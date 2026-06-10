@@ -47,7 +47,7 @@ LOCAL="$HOME/Documents/sandbox/projects/artifacts/.tts/<name>"   # dot-prefixed:
 ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs/tts/<name>"
 mkdir -p "$LOCAL" "$ICLOUD"
 
-~/venv/tts/bin/python renderer/render_vibevoice_perturn.py \
+~/.claude/skills-venv/bin/python renderer/render_vibevoice_perturn.py \
     --turns build/<name>.turns.json \
     --voice HOST=en-Mike_man \
     --voice GUEST=en-Carter_man \
@@ -100,7 +100,7 @@ Point `--out` at the local `.tts` path; the renderer writes WAV + cache + build 
 - `renderer/render_vibevoice_perturn.py` — turns.json → wav/mp3
 - `examples/` — starting template (copy this, don't edit in place)
 - `PLAYBOOK.md` — full producer reference (read before invoking on a new project)
-- `pyproject.toml`, `uv.lock` — manifest for the deps (mlx-audio, soundfile, numpy) that live in `~/venv/tts/`. Model is `mlx-community/VibeVoice-Realtime-0.5B-fp16` (HuggingFace cache).
+- `pyproject.toml`, `uv.lock` — manifest for the deps (mlx-audio, soundfile, numpy) that live in `~/.claude/skills-venv/`. Model is `mlx-community/VibeVoice-Realtime-0.5B-fp16` (HuggingFace cache).
 
 ## Hardware
 

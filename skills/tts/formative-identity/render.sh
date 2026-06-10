@@ -15,7 +15,7 @@ set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RENDERER_DIR="$(cd "$PROJECT_DIR/../renderer" && pwd)"
-VENV="$HOME/venv/tts"
+VENV="$HOME/.claude/skills-venv"
 
 CHAPTER="${1:-01-configuration-attachment}"
 NARRATOR_VOICE="en-Mike_man"  # proven from flex podcast / PLAYBOOK §3

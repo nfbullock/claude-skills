@@ -16,7 +16,7 @@ never model-generated. **Claude writes only the narrative** and categorizes the 
 and are **confirmed with Nick before firing.**
 
 Paths: project `~/Documents/sandbox/projects/money` (run everything from here); interpreter
-`~/venv/default/bin/python`; outside world via `pipeline/shim.py` (the studio shim-api client).
+`~/.claude/skills-venv/bin/python`; outside world via `pipeline/shim.py` (the studio shim-api client).
 
 **Reference — read `research/REVIEW-REFERENCE.md` before writing the briefing.** Distilled from
 Nick's Deep Research, tailored to his profile (family of 4, Carlsbad/San Diego, ~$250k MFJ): the
@@ -33,7 +33,7 @@ If unsure, check `state/history.jsonl`; absent → bootstrap.
 
 ### 2. Run the deterministic engine (rules-only — no local model)
 ```
-~/venv/default/bin/python -m pipeline.run <bootstrap|weekly> --source dumps --no-llm
+~/.claude/skills-venv/bin/python -m pipeline.run <bootstrap|weekly> --source dumps --no-llm
 ```
 Read the **Preflight** block it prints (per-file rows · $in · $out · range):
 - If it **REFUSES** an inverted credit-card file, tell Nick to copy `accounts.yaml.template` →
@@ -70,7 +70,7 @@ Save the briefing to `reports/briefing.md`.
 
 ### 5. Render the sheet
 ```
-~/venv/default/bin/python -m pipeline.run <mode> --source dumps --no-llm --briefing reports/briefing.md
+~/.claude/skills-venv/bin/python -m pipeline.run <mode> --source dumps --no-llm --briefing reports/briefing.md
 ```
 Writes the HTML and a printable **PDF** (with a Target/Δ column if `targets.yaml` exists).
 

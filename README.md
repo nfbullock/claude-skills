@@ -82,6 +82,21 @@ pruned, committed, and pushed automatically — and every other host unlinks
 it on their next sync. Per-host opt-out (without deleting) is the host's
 `remove` list.
 
+## Python
+
+One shared venv for all skills, in-repo and gitignored: `make venv` builds
+`.venv/` with uv from `requirements.txt` (add a package there the moment a
+skill imports it; Apple-Silicon-only deps carry platform markers). Skill code
+never hardcodes the repo path — sync maintains a stable per-host symlink:
+
+```
+~/.claude/skills-venv -> <repo>/.venv
+```
+
+so every script and SKILL.md uses `~/.claude/skills-venv/bin/python`.
+`bin/skills-sync` and `bin/categorize` deliberately stay on system python3
+(stdlib only) — they must work on a fresh host before uv or the venv exist.
+
 ## Notes
 
 - Skills are **symlinked**, not copied — `git pull` is the whole update, and

@@ -14,10 +14,10 @@ Push notifications to Nick's phone/Mac from any machine. No Apple developer acco
    # set "topic" to your secret string
    chmod 600 ~/.config/push-notify/config.json
    ```
-5. **Deps:** `requests` only (already in ~/venv/default from the music skill). Nothing else.
+5. **Deps:** `requests` only (already in ~/.claude/skills-venv from the music skill). Nothing else.
 6. **Test:**
    ```bash
-   ~/venv/default/bin/python scripts/send.py --title "Test" --message "hello from push-notify" --tags "wave"
+   ~/.claude/skills-venv/bin/python scripts/send.py --title "Test" --message "hello from push-notify" --tags "wave"
    ```
    `{"status": 200, ...}` and a buzz on your phone = working.
 

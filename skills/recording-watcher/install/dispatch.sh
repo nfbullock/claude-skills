@@ -38,7 +38,7 @@ while IFS= read -r path; do
   # placeholder not yet materialized when fswatch fires) needs to remain
   # eligible for retry on the next fswatch event — see watch.py's
   # wait_for_sync_settled and the 2026-05-10 walking-review incident.
-  if ( cd "$WATCHER_DIR" && "$HOME/venv/default/bin/python" watch.py "$path" ) >> "$LOG" 2>&1; then
+  if ( cd "$WATCHER_DIR" && "$HOME/.claude/skills-venv/bin/python" watch.py "$path" ) >> "$LOG" 2>&1; then
     printf '%s\n' "$path" >> "$SEEN"
   else
     echo "[$(date '+%Y-%m-%dT%H:%M:%S%z')] watch.py failed for $path (not marking seen; will retry on next fswatch event)" >> "$LOG"

@@ -29,7 +29,7 @@ STATE_FILE = STATE_DIR / "state.json"
 PUSH_SEND = pathlib.Path(
     "/Users/dad/Documents/sandbox/projects/claude_skills/push-notify/scripts/send.py"
 )
-PUSH_PYTHON = pathlib.Path.home() / "venv/default/bin/python"
+PUSH_PYTHON = pathlib.Path.home() / ".claude/skills-venv/bin/python"
 
 # Each domain names WHERE to look so the research is grounded in live community
 # signal, not the model's memory. Order: leaderboard -> HF trending -> Reddit.

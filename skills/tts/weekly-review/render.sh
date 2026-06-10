@@ -15,7 +15,7 @@ set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RENDERER_DIR="$(cd "$PROJECT_DIR/../renderer" && pwd)"
-VENV="$HOME/venv/tts"
+VENV="$HOME/.claude/skills-venv"
 
 DATE="${1:-2026-05-15}"
 NARRATOR_VOICE="en-Mike_man"  # Fred's voice — proven from formative-identity / PLAYBOOK §3

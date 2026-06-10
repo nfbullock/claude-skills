@@ -44,7 +44,7 @@ and the sequence tells a story.
 check — it does the remembering for you:
 
 ```bash
-~/venv/default/bin/python \
+~/.claude/skills-venv/bin/python \
   /Users/dad/Documents/sandbox/projects/claude_skills/apple-music-playlist/scripts/create_playlist.py \
   --recent <Domain>          # Office | Gym | Playground | Stage
 ```
@@ -139,7 +139,7 @@ is required — it justifies the pick and doubles as Nick's reading guide.
 
 ## Step 4: Invoke the skill script
 ```bash
-~/venv/default/bin/python \
+~/.claude/skills-venv/bin/python \
   /Users/dad/Documents/sandbox/projects/claude_skills/apple-music-playlist/scripts/create_playlist.py \
   --input /tmp/lesson_tracks.json
 ```
@@ -157,7 +157,7 @@ The script prints JSON to stdout:
 
 If `status` is `"auth_required"`, tell Nick to re-run the bridge and STOP — do not write the lesson:
 ```bash
-~/venv/default/bin/python \
+~/.claude/skills-venv/bin/python \
   /Users/dad/Documents/sandbox/projects/claude_skills/apple-music-playlist/scripts/serve_bridge.py
 ```
 

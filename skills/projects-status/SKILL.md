@@ -21,7 +21,7 @@ Nick — ENTP, design-heavy / execution-light by his own diagnosis, lives in the
 ## How to run it
 
 ```bash
-~/venv/default/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/projects-status/scan.py
+~/.claude/skills-venv/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/projects-status/scan.py
 ```
 
 JSON output. The fields you'll use:
@@ -146,6 +146,6 @@ Use the top-scored items as input to RECOMMENDED MOVES (specifically: PUSH for h
 ## Files
 
 - `scan.py` — JSON data layer.
-- `reconcile.py` — hopper↔Things state machine. Standalone: `~/venv/default/bin/python reconcile.py [--dry-run]`.
+- `reconcile.py` — hopper↔Things state machine. Standalone: `~/.claude/skills-venv/bin/python reconcile.py [--dry-run]`.
 - `backfill_uuids.py` — one-time legacy fixer. Already run.
 - `SKILL.md` — this file. The cowork prompt.

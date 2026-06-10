@@ -19,7 +19,7 @@ The voice-capture endpoint. One press of the record button on the phone, anywher
 When invoked, run the orchestrator:
 
 ```bash
-~/venv/default/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/recording-watcher/watch.py <audio-file-path>
+~/.claude/skills-venv/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/recording-watcher/watch.py <audio-file-path>
 ```
 
 Default behavior:

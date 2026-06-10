@@ -188,6 +188,19 @@ def write_state(host):
     with open(STATE_FILE, "w") as f:
         json.dump({"repo": REPO, "host": host}, f, indent=2)
         f.write("\n")
+    # Stable per-host pointer to the shared skill venv (built by `make venv`),
+    # so skill code can reference ~/.claude/skills-venv regardless of where
+    # the repo is cloned on this host.
+    venv_link = os.path.expanduser("~/.claude/skills-venv")
+    venv_target = os.path.join(REPO, ".venv")
+    if os.path.islink(venv_link):
+        if os.path.realpath(venv_link) != os.path.realpath(venv_target):
+            os.remove(venv_link)
+            os.symlink(venv_target, venv_link)
+    elif not os.path.exists(venv_link):
+        os.symlink(venv_target, venv_link)
+    if not os.path.isdir(venv_target):
+        print("note: %s/.venv missing — run `make venv` for python-backed skills" % REPO)
 
 
 def repo_skills():

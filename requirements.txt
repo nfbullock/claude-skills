@@ -1,0 +1,23 @@
+# Shared deps for every skill's Python. Installed into <repo>/.venv by
+# `make venv` (uv). Scripts reach it via the stable per-host symlink
+# ~/.claude/skills-venv -> <repo>/.venv, maintained by skills-sync.
+# Add a package here the moment a skill imports it.
+
+beautifulsoup4
+click
+cryptography
+html2text
+lxml
+pillow
+pyjwt
+pypdf
+pytest
+pyyaml
+reportlab
+requests
+rich
+
+# tts stack — Apple Silicon only; skipped automatically elsewhere
+mlx-audio; sys_platform == "darwin" and platform_machine == "arm64"
+numpy
+soundfile

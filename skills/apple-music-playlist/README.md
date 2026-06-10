@@ -2,7 +2,7 @@
 
 Builds a prescriptive, lesson-tied Apple Music playlist in Nick's library before a lesson, so he
 listens first and learns second. Lives in the shared `claude_skills/` dir; reachable from the
-music project via its `.claude/skills` symlink. Runs under `~/venv/default` per repo convention.
+music project via its `.claude/skills` symlink. Runs under `~/.claude/skills-venv` per repo convention.
 
 > Conventions inherited from `music/listening.md`: playlists are named `Sylvia — <topic>`, and
 > each creation appends a line to that file's **Playlist log**. See `SKILL.md`.
@@ -26,12 +26,12 @@ chmod 600 ~/.config/apple-music-skill/credentials.json
 
 ## 3. Python deps (into the shared default venv)
 ```bash
-uv pip install --python ~/venv/default/bin/python pyjwt[crypto] cryptography requests
+uv pip install --python ~/.claude/skills-venv/bin/python pyjwt[crypto] cryptography requests
 ```
 
 ## 4. Capture the Music User Token (one time)
 ```bash
-~/venv/default/bin/python scripts/serve_bridge.py
+~/.claude/skills-venv/bin/python scripts/serve_bridge.py
 ```
 Open <http://localhost:8765> in **Safari**, click Authorize, sign in with the Apple ID that holds
 the Apple Music subscription. The MUT is written into `credentials.json`. Re-run this whenever a
@@ -40,7 +40,7 @@ the Apple Music subscription. The MUT is written into `credentials.json`. Re-run
 ## 5. Smoke test
 ```bash
 echo '{"playlist_name":"Sylvia — Test","description":"test","tracks":[{"artist":"Reel Big Fish","title":"Sell Out","rationale":"test"}]}' > /tmp/test.json
-~/venv/default/bin/python scripts/create_playlist.py --input /tmp/test.json
+~/.claude/skills-venv/bin/python scripts/create_playlist.py --input /tmp/test.json
 ```
 
 ## Token model
