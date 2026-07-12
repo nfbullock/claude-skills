@@ -1,6 +1,6 @@
 ---
 name: music-status
-description: Orientation report for Nick's music project — the four-track umbrella (gym, playground, Stage, office). Shows where each track stands (lesson counts, phase, what's next, retro/playlist blocks), the active cover pulls, and the state of the source reservoir (syntheses, holes, open requests). Cowork pattern — scan.py emits deterministic JSON, Claude writes the report with judgment. Invoke as /music-status. Read-only. Sibling to /projects-status and /skills-status.
+description: Orientation report for Nick's music project — the four-track umbrella (gym, field, Stage, office). Shows where each track stands (lesson counts, phase, what's next, retro/playlist blocks), the active cover pulls, and the state of the source reservoir (syntheses, holes, open requests). Cowork pattern — scan.py emits deterministic JSON, Claude writes the report with judgment. Invoke as /music-status. Read-only. Sibling to /projects-status and /skills-status.
 status: active
 ---
 
@@ -15,14 +15,14 @@ It is **read-only**. It never generates a lesson, never edits a track file, neve
 1. Runs `scan.py`, which deterministically reads:
    - Each track's lesson count, newest lesson, and how long since it moved.
    - **Gym**: current phase, rotation "next suggested", count of queued-but-not-practiced lessons (from `gym/state.md`).
-   - **Playground**: current phase, cover phase (recipe vs deconstruct), songs finished, and the active cover pulls (from `JOURNAL.md`).
+   - **Field**: current phase, cover phase (recipe vs deconstruct), songs finished, and the active cover pulls (from `JOURNAL.md`).
    - **Sources**: synthesis count, holes (raw source with no matching synthesis), open Tier-1 requests (from `sources/raw/REQUESTED.md`).
 2. Claude reads the JSON and writes a single scannable report with editorial judgment — see "Building the report" below.
 
 ## How to invoke
 
 ```bash
-~/.claude/skills-venv/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/music-status/scan.py --json
+~/venv/default/bin/python /Users/dad/Documents/sandbox/backstairs/music-status/scan.py --json
 ```
 
 (Drop `--json` for a quick human-readable dump if you just want to eyeball it without Claude formatting.)
@@ -35,9 +35,9 @@ Structure it as **four track lines + a sources line + a short "obvious next move
 
 ### Per-track judgment to apply
 
-- **Retro/playlist gate (gym + playground only).** Both block their next lesson on (a) the prior lesson having a retrospective, and (b) a reference playlist being built. If gym shows `queued_lessons > 0`, the next lesson is *already generated and waiting to be practiced* — the move isn't "generate a lesson," it's "practice 010-ep / 011-gk, then retro." Say that. Don't suggest generating a new gym lesson when printed ones are unpracticed.
-- **Stage + office never block.** Their retros are optional. Don't flag them as "missing a retro." A long silence on Stage/office is not a problem to surface — these are pull-based and allowed to sit quiet (so is playground; see below).
-- **Playground is pull-based and allowed to be quiet.** If playground hasn't moved in weeks, that's not staleness — per the project's own framing, Nick's energy flows toward office/gym for stretches and the playground sits quiet by design. Note the active cover pulls (they're the warm pulls waiting), but don't nag.
+- **Retro/playlist gate (gym + field only).** Both block their next lesson on (a) the prior lesson having a retrospective, and (b) a reference playlist being built. If gym shows `queued_lessons > 0`, the next lesson is *already generated and waiting to be practiced* — the move isn't "generate a lesson," it's "practice 010-ep / 011-gk, then retro." Say that. Don't suggest generating a new gym lesson when printed ones are unpracticed.
+- **Stage + office never block.** Their retros are optional. Don't flag them as "missing a retro." A long silence on Stage/office is not a problem to surface — these are pull-based and allowed to sit quiet (so is field; see below).
+- **Field is pull-based and allowed to be quiet.** If field hasn't moved in weeks, that's not staleness — per the project's own framing, Nick's energy flows toward office/gym for stretches and the field sits quiet by design. Note the active cover pulls (they're the warm pulls waiting), but don't nag.
 - **Cover pulls are warm leads, not a backlog.** List them; if one has a notable hook (e.g. the McHugh "Go Don't Stop" grief-lyric-rewrite), name it in a few words. Don't imply they're overdue.
 
 ### Sources judgment to apply
@@ -55,7 +55,7 @@ Same register as `/skills-status` and `/projects-status`: terse, scannable, hone
 - It does not write to any track file, `state.md`, `JOURNAL.md`, or source.
 - It does not generate lessons or build playlists — it points at where those are due. Generating a lesson is a separate, explicit ask routed through the relevant mode's CLAUDE.md.
 - It does not run the reaper or a deep sweep. This is the daily-orientation altitude, not the periodic deep audit.
-- It does not flag Stage/office/playground as stale by mtime — those tracks are pull-based by design.
+- It does not flag Stage/office/field as stale by mtime — those tracks are pull-based by design.
 
 ## Sibling tools
 
@@ -65,3 +65,4 @@ Same register as `/skills-status` and `/projects-status`: terse, scannable, hone
 
 - `scan.py` — deterministic scan. Reads each track + the sources reservoir, emits JSON (`--json`) or a human-readable dump (default). Makes no qualitative calls.
 - `SKILL.md` — this file.
+

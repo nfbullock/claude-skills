@@ -5,14 +5,14 @@ set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RENDERER_DIR="$(cd "$PROJECT_DIR/../renderer" && pwd)"
-VENV="$HOME/.claude/skills-venv"
+VENV="$HOME/venv/tts"
 
 NAME="episode"
 HOST_VOICE="en-Mike_man"
 GUEST_VOICE="en-Carter_man"
 # Bulky master + per-turn cache stay LOCAL under .tts (dot-prefixed → Obsidian Sync
 # ignores it, and it never churns iCloud). Only the final MP3 is copied to iCloud.
-LOCAL_DIR="$HOME/Documents/sandbox/projects/artifacts/.tts/${NAME}"
+LOCAL_DIR="$HOME/Documents/sandbox/artifacts/.tts/${NAME}"
 ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/tts/${NAME}"
 
 mkdir -p "$LOCAL_DIR" "$ICLOUD_DIR"

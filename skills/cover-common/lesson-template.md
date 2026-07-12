@@ -1,6 +1,6 @@
 # Cover lesson file — shared template
 
-Shared by `cover-deconstruct` and `song-recipe`. Both skills write to `playground/lessons/NN-cover-<slug>.md` (next number, kebab-case slug from the song title). The sections below are the shared core; each skill's SKILL.md notes its mode-specific deltas (extra sections, different framings).
+Shared by `cover-deconstruct` and `song-recipe`. Both skills write to `field/lessons/NN-cover-<slug>.md` (next number, kebab-case slug from the song title). The sections below are the shared core; each skill's SKILL.md notes its mode-specific deltas (extra sections, different framings).
 
 ---
 
@@ -53,7 +53,7 @@ What NOT to do, narrowed for this song. Always include:
 
 ## 10. What this cover trains your ear for
 
-One paragraph. Name **the specific listening skill** this song forces you to develop. This is what compounds, and what gets appended to `playground/JOURNAL.md` *Listening skills learned* after the retrospective — **with a domain tag**, one of `rhythm | harmony | melody | form | lyric | timbre`, leading the entry. Quiz calibration (`cover-deconstruct/references/quiz-calibration.md`) reads these tags to set difficulty per domain, so the tag is load-bearing, not decoration.
+One paragraph. Name **the specific listening skill** this song forces you to develop. This is what compounds, and what gets appended to `field/JOURNAL.md` *Listening skills learned* after the retrospective — **with a domain tag**, one of `rhythm | harmony | melody | form | lyric | timbre`, leading the entry. Quiz calibration (`cover-deconstruct/references/quiz-calibration.md`) reads these tags to set difficulty per domain, so the tag is load-bearing, not decoration.
 
 Examples:
 
@@ -90,7 +90,7 @@ This is not a fidelity test — the original stays unplayed, and the checklist a
 
 Same flow as a regular lesson retrospective (see `CLAUDE.md` in the project), with these additions both skills share:
 
-1. Append to `playground/JOURNAL.md` *Listening skills learned* the skill named in Section 10, **with its domain tag** (`rhythm | harmony | melody | form | lyric | timbre`). This is the entry that calibrates `cover-deconstruct` quiz difficulty later — per domain, so the tag matters.
+1. Append to `field/JOURNAL.md` *Listening skills learned* the skill named in Section 10, **with its domain tag** (`rhythm | harmony | melody | form | lyric | timbre`). This is the entry that calibrates `cover-deconstruct` quiz difficulty later — per domain, so the tag matters.
 
 2. If the retrospective surfaced a *new* listening pattern Nick noticed while making it ("I noticed the bass and kick lock up at the section change, not just on the downbeat"), add it to **Notes for the coach**.
 
@@ -99,3 +99,4 @@ Same flow as a regular lesson retrospective (see `CLAUDE.md` in the project), wi
 4. Remind Nick the 48-hour blind audit (Section 12) is open — retro now, audit later. Don't chase it, don't block on it; if he brings audit findings back later, fold them into **Notes for the coach**.
 
 `song-recipe` adds one more: **watch for graduation signal.** The operational criterion is **consistent transfer-test success across domains** (see `cover-deconstruct/references/quiz-calibration.md`): Nick spotting learned cues in *unfamiliar* songs — delivered via the lesson's reference playlist — across several of the six domains, not just his strongest one. Softer corroborating signs still count: predicting the breakdown before reading it, naming chords or feels you didn't tell him, questioning a keep/drop/replace call you made. When the signal is there — suggest flipping `Cover phase` to `deconstruct`. Frame as a promotion Nick accepts, never a test he passes. Nick decides.
+

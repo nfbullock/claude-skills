@@ -1,6 +1,6 @@
 ---
 name: tts
-description: Turn text into audio. Two formats: spoken-word (single voice, audiobook/narration) or dialog (multi-voice, podcast-shaped with [SPEAKER] tags). Uses VibeVoice via mlx-audio with per-turn rendering for cache-friendly iteration. Final audio lands in ~/Library/Mobile Documents/com~apple~CloudDocs/tts/<name>/ so it syncs to Nick's phone; per-turn caches stay in projects/artifacts/.tts/<name>/ (dot-prefixed so Obsidian Sync ignores them). Invoke when Nick asks to TTS something, narrate something, make a podcast, or generate audio of any text.
+description: Turn text into audio. Two formats: spoken-word (single voice, audiobook/narration) or dialog (multi-voice, podcast-shaped with [SPEAKER] tags). Uses VibeVoice via mlx-audio with per-turn rendering for cache-friendly iteration. Final audio lands in ~/Library/Mobile Documents/com~apple~CloudDocs/tts/<name>/ so it syncs to Nick's phone; per-turn caches stay in artifacts/.tts/<name>/ (dot-prefixed so Obsidian Sync ignores them). Invoke when Nick asks to TTS something, narrate something, make a podcast, or generate audio of any text.
 status: active
 ---
 
@@ -37,17 +37,17 @@ Detect format by scanning input: if `[A-Z]+]` speaker tags appear at line starts
 4. **Chunk.** `renderer/chunker.py` parses the markdown to `<name>.turns.json`. Strips headers, stage directions, applies pronunciation regexes, splits long turns on sentence boundaries.
 5. **Render.** `renderer/render_vibevoice_perturn.py` renders each `(speaker, text)` turn to a WAV, then `ffmpeg concat` stitches with silence between turns. Default `gap_ms=400`.
 6. **Master.** `loudnorm I=-16:TP=-1.5:LRA=11` (single pass).
-7. **Output.** Render WAV + per-turn cache + build artifacts to local `~/Documents/sandbox/projects/artifacts/.tts/<name>/` so iteration on one bad line is cheap and the master stays accessible. The `.tts` dir is **dot-prefixed on purpose**: it sits inside the Obsidian vault, and Obsidian Sync (like iCloud) ignores dot-folders, so the bulky regeneratable WAVs never travel either sync surface. Then `cp` the final MP3 to `~/Library/Mobile Documents/com~apple~CloudDocs/tts/<name>/<name>.mp3` so it syncs to Nick's phone (AirPods + Files app). **Only the MP3 leaves the local hidden dir** — never point `--out` at iCloud, or the master + cache get dumped where they don't belong.
+7. **Output.** Render WAV + per-turn cache + build artifacts to local `~/Documents/sandbox/artifacts/.tts/<name>/` so iteration on one bad line is cheap and the master stays accessible. The `.tts` dir is **dot-prefixed on purpose**: it sits inside the Obsidian vault, and Obsidian Sync (like iCloud) ignores dot-folders, so the bulky regeneratable WAVs never travel either sync surface. Then `cp` the final MP3 to `~/Library/Mobile Documents/com~apple~CloudDocs/tts/<name>/<name>.mp3` so it syncs to Nick's phone (AirPods + Files app). **Only the MP3 leaves the local hidden dir** — never point `--out` at iCloud, or the master + cache get dumped where they don't belong.
 
 ## Render command
 
 ```bash
-cd ~/Documents/sandbox/projects/claude_skills/tts
-LOCAL="$HOME/Documents/sandbox/projects/artifacts/.tts/<name>"   # dot-prefixed: Obsidian Sync ignores it
+cd ~/Documents/sandbox/backstairs/tts
+LOCAL="$HOME/Documents/sandbox/artifacts/.tts/<name>"   # dot-prefixed: Obsidian Sync ignores it
 ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs/tts/<name>"
 mkdir -p "$LOCAL" "$ICLOUD"
 
-~/.claude/skills-venv/bin/python renderer/render_vibevoice_perturn.py \
+~/venv/tts/bin/python renderer/render_vibevoice_perturn.py \
     --turns build/<name>.turns.json \
     --voice HOST=en-Mike_man \
     --voice GUEST=en-Carter_man \
@@ -83,12 +83,12 @@ Copy `examples/` to a working dir, edit `build_turns.py` (speakers, pronunciatio
 
 ## Output convention
 
-**Local (the master + everything bulky):** `~/Documents/sandbox/projects/artifacts/.tts/<name>/`
+**Local (the master + everything bulky):** `~/Documents/sandbox/artifacts/.tts/<name>/`
 - `<name>.wav` — the loudnormed master (~900 MB for a 35-min chapter)
 - `<name>_turns/turn_NNNN_<SPEAKER>.wav` — per-turn cache; required for cheap iteration on a single bad line
 - `<name>.concat.txt`, `silence_400ms_24000.wav` — build artifacts
 
-The `.tts` parent is **dot-prefixed deliberately**. This dir lives inside the Obsidian vault (`projects/artifacts/`), and Obsidian Sync — like iCloud — never indexes or syncs dot-folders at any depth. Without the dot, every render dumped hundreds of MB of WAVs into the synced vault and broke sync. Keep the cache (it makes single-line re-renders cheap), just keep it hidden. This is the skill cleaning up after itself: bulky regeneratable output never enters a sync surface.
+The `.tts` parent is **dot-prefixed deliberately**. This dir lives inside the Obsidian vault (`artifacts/`), and Obsidian Sync — like iCloud — never indexes or syncs dot-folders at any depth. Without the dot, every render dumped hundreds of MB of WAVs into the synced vault and broke sync. Keep the cache (it makes single-line re-renders cheap), just keep it hidden. This is the skill cleaning up after itself: bulky regeneratable output never enters a sync surface.
 
 **iCloud (only the phone-sync copy):** `~/Library/Mobile Documents/com~apple~CloudDocs/tts/<name>/<name>.mp3`
 
@@ -100,7 +100,7 @@ Point `--out` at the local `.tts` path; the renderer writes WAV + cache + build 
 - `renderer/render_vibevoice_perturn.py` — turns.json → wav/mp3
 - `examples/` — starting template (copy this, don't edit in place)
 - `PLAYBOOK.md` — full producer reference (read before invoking on a new project)
-- `pyproject.toml`, `uv.lock` — manifest for the deps (mlx-audio, soundfile, numpy) that live in `~/.claude/skills-venv/`. Model is `mlx-community/VibeVoice-Realtime-0.5B-fp16` (HuggingFace cache).
+- `pyproject.toml`, `uv.lock` — manifest for the deps (mlx-audio, soundfile, numpy) that live in `~/venv/tts/`. Model is `mlx-community/VibeVoice-Realtime-0.5B-fp16` (HuggingFace cache).
 
 ## Hardware
 

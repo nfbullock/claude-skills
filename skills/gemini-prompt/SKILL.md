@@ -19,29 +19,35 @@ When ambiguous, ask one sentence: "One-off DR prompt, or a full arc?"
 
 ## The architecture (where things live)
 
-Two-stage flow: prompts are written to `requested/` (staging), then moved to the final bucket on ingest.
+Two-stage flow: prompts are written to `requested/` (staging), then moved to the final bucket on ingest. The stem never changes — `{project}-NN-slug` in staging stays `{project}-NN-slug` in the final home.
 
 ```
-research/requested/<project>/      ← STAGING: prompt written, waiting on Gemini
-  NN-slug.prompt.md                  the DR prompt — what Nick pastes INTO Gemini
-  NN-slug.response.md                stub until Nick pastes the response back
+research/requested/                ← STAGING: flat, all projects; prompt waiting on Gemini
+  {project}-NN-slug.prompt.md        the DR prompt — what Nick pastes INTO Gemini
+  {project}-NN-slug.response.md      stub until Nick pastes the response back
 
-research/<bucket>/                 ← FINAL: response filled, moved here on ingest
-  NN-slug.prompt.md
-  NN-slug.response.md
+research/prompts/<bucket>/         ← FINAL: response filled, pair moved here on ingest
+  {bucket}-NN-slug.prompt.md
+  {bucket}-NN-slug.response.md
   <arc-dir>/                         full research arcs live alongside prompt files
 
 research/adhoc/<topic>/            ← FINAL for ad-hoc topics (not tied to a project)
-  NN-slug.prompt.md
-  NN-slug.response.md
+  {topic}-NN-slug.prompt.md          (older pairs are bare NN-slug; numbering tolerates both)
+  {topic}-NN-slug.response.md
+
+research/prompts/<parent>/<subtopic>/  ← FINAL for a bucket split into subtopics
+  {subtopic}-NN-slug.prompt.md         (each subtopic = own NN numbering + own synthesis)
+  {subtopic}-NN-slug.response.md
 
 <project>/.../synthesis/           ← stays in the project (work done ON the raw)
 ```
 
-Current buckets: `music`, `life-story`, `food`. Add a bucket to `PROJECT_BUCKETS` in `hub.py` when a project's research graduates from adhoc.
+Current buckets: `music`, `life-story`, `food`, `dahlias-laptop`, `dx`, `kids-skills`, `reading`, `health`. Add a bucket to `PROJECT_BUCKETS` in `hub.py` when a project's research graduates from adhoc.
+
+**Subtopic buckets.** A bucket can be split into subtopic subfolders (`research/prompts/<parent>/<subtopic>/`) so each cluster gets its own numbering and its own synthesis — `dx` does this with `code-review-bottleneck/` and `team-memory/`. The **subtopic slug is the routing key** passed to `new`/`complete`/`outstanding` (e.g. `hub.py new team-memory <slug>` → stages `team-memory-NN-slug` → lands in `research/prompts/dx/team-memory/`). Register subtopics in `SUBTOPIC_BUCKETS` in `hub.py`.
 
 Two hard principles:
-1. **Raw research is centralized.** Prompt + raw response always live under `research/requested/<project>/` while pending, then `research/<bucket>/` (project-tied) or `research/adhoc/<topic>/` (ad-hoc) once complete. Same place, every time, regardless of which directory the session was launched from.
+1. **Raw research is centralized.** Prompt + raw response always live in the flat `research/requested/` while pending (the `{project}-` prefix carries the routing), then `research/prompts/<bucket>/` (project-tied) or `research/adhoc/<topic>/` (ad-hoc) once complete. Same place, every time, regardless of which directory the session was launched from.
 2. **Synthesis stays home.** When a project distills the raw into something it uses, that synthesis lives in the project, not the hub. The hub holds raw material only.
 
 Paired-adjacent naming (`.prompt.md` / `.response.md`, one stem) means the prompt and its response always sort next to each other. Nick always knows: the prompt is `.prompt.md`; the response goes in the `.response.md` beside it — and it's already created for him.
@@ -54,7 +60,7 @@ Resolve the target project from the current working directory using the helper:
 ~/venv/default/bin/python <skill>/hub.py resolve
 ```
 
-It prints the path segment immediately under `projects/` (e.g. cwd inside `projects/music/...` → `music`). It prints **empty** when cwd is the `projects/` root or inside `research/` itself — no unambiguous project. In that case, ask Nick which project, or infer it from the conversation topic, then proceed.
+It prints the path segment immediately under the vault root (e.g. cwd inside `music/...` → `music`). It prints **empty** when cwd is the vault root or inside `research/` itself — no unambiguous project. In that case, ask Nick which project, or infer it from the conversation topic, then proceed.
 
 ## Workflow A — write a prompt
 
@@ -64,18 +70,18 @@ It prints the path segment immediately under `projects/` (e.g. cwd inside `proje
    ```
    ~/venv/default/bin/python <skill>/hub.py new <project> <slug>
    ```
-   This prints two paths inside `research/requested/<project>/`: the `.prompt.md` (you fill it) and the `.response.md` (already stubbed — Nick pastes into it).
-4. **Write the prompt** into the `.prompt.md`. It MUST be self-contained — pasteable cold into Gemini Deep Research with no outside context. Follow the established register (see the existing files under `research/food/` and `research/life-story/`): a **Profile** block (who it's for — do not research the person), **Standing instructions** (format, citation rigor, length), the **research question**, numbered **sub-questions each requesting citations**, and **source guidance**. Carry a defer-guard if the project has a prior corpus not to re-pave.
+   This prints two paths inside the flat `research/requested/`: the `.prompt.md` (you fill it) and the `.response.md` (already stubbed — Nick pastes into it).
+4. **Write the prompt** into the `.prompt.md`. It MUST be self-contained — pasteable cold into Gemini Deep Research with no outside context. Follow the established register (see the existing files under `research/prompts/food/` and `research/prompts/music/`): a **Profile** block (who it's for — do not research the person), **Standing instructions** (format, citation rigor, length), the **research question**, numbered **sub-questions each requesting citations**, and **source guidance**. Carry a defer-guard if the project has a prior corpus not to re-pave.
 5. **Register it pending** — `memory_store`: content `"Pending Gemini DR prompt: research/requested/{project}-NN-slug.prompt.md — <one-line topic>"`, tags `["deep-research-prompt", "<project>", "pending"]`, metadata `{project, slug, prompt_path, response_path, status: "awaiting-run"}`.
 6. **Hand off** — tell Nick the exact prompt path to copy into Gemini and the response path to paste the output into. Nothing for him to create or name.
 
 ## Workflow B — ingest responses
 
 1. **Resolve the project.**
-2. **Find filled responses** — `hub.py outstanding <project>` lists prompts in `requested/` still awaiting a response. Anything in `requested/<project>/` whose `.response.md` has content past the stub is freshly filled. Read those `.response.md` files into context.
+2. **Find filled responses** — `hub.py outstanding <project>` lists prompts in `requested/` still awaiting a response. Anything in `requested/` whose `.response.md` has content past the stub is freshly filled. Read those `.response.md` files into context.
 3. **Treat the response as external + unverified.** It came from Google/Gemini Deep Research, not from you — so it may carry hallucinations, stale figures, or thin citations. When it matters (or when Nick asks), use **your own** deep research to **validate or extend** it: web-search / the `deep-research` skill to fact-check load-bearing claims, flag or correct anything unsupported, and add fresher or missing sources. This is the one place Claude-side research belongs — *downstream* of the external report, never as a substitute for running the prompt in Google DR.
 4. **Do the work** Nick asked for (synthesize, draft, answer), now grounded in the validated/extended material. Any synthesis output lands in the **project**, not the hub.
-5. **Move to final bucket** — `hub.py complete <project> <stem>` moves the pair from `requested/<project>/` to the final bucket (`research/<bucket>/` or `research/adhoc/<topic>/`). Prints the two final paths.
+5. **Move to final bucket** — `hub.py complete <project> <stem>` moves the pair from `requested/` to the final bucket (`research/prompts/<bucket>/` or `research/adhoc/<topic>/`), keeping the stem. Prints the two final paths.
 6. **Close the loop** — `memory_delete` the matching pending entry (the filled `.response.md` is now in the final bucket, so the memory queue stays a clean "what's still outstanding" list).
 
 ## Workflow C — what's outstanding
@@ -86,8 +92,9 @@ It prints the path segment immediately under `projects/` (e.g. cwd inside `proje
 
 Stdlib, run via `~/venv/default/bin/python`. Owns the fiddly mechanics so they aren't model-guesswork:
 - `resolve [cwd]` → project name from cwd (empty if none).
-- `new <project> <slug>` → allocate next zero-padded `NN`, make the dir, pre-create the `.response.md` stub, print both paths.
+- `new <project> <slug>` → allocate next zero-padded `NN`, pre-create the `.response.md` stub in `requested/`, print both paths.
 - `outstanding [project]` → prompts whose response is still unfilled.
+- `complete <project> <stem>` → move the filled pair to its final home, stem unchanged.
 
 Claude owns prompt prose and ingestion; the helper owns paths/numbering/touching; personal-memory owns the cross-session queue.
 
@@ -102,3 +109,4 @@ The rule of thumb: if a project's research is gitignored or a skill consumes it 
 ## Project discoverability
 
 Each project that has central raw research carries a `raw` symlink pointing at its hub folder, so the raw is visible from inside the project without duplication. When you first centralize a project's research, create that symlink (`ln -s` — matches Nick's symlink-for-skills convention) and update any in-project corpus docs (e.g. `INGESTION.md`, `SEED-INDEX.md`) to note that prompts + raw now live centrally and are surfaced via `raw/`.
+

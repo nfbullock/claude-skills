@@ -26,7 +26,7 @@ from chunker import (  # noqa: E402
 PROJECT_ROOT = Path(__file__).resolve().parent
 SCRIPT_DIR = PROJECT_ROOT / "scripts"
 OUT_DIR = PROJECT_ROOT / "build"
-WEEKLY_DIR = Path("/Users/dad/Documents/sandbox/projects/review/weekly")
+WEEKLY_DIR = Path("/Users/dad/Documents/sandbox/review/weekly")
 
 SPEAKERS = ("NARRATOR",)
 

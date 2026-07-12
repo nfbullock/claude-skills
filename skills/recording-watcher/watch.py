@@ -12,13 +12,14 @@ Pipeline:
     2. transcribe via lib.transcribe (whisper-large-v3-turbo)
     3. classify via lib.classify (Opus 4.7 → {route, confidence, reasoning})
     4. dispatch:
-         review_recording → projects/review/handle.py (cadence factory; detects
-                            daily/weekly/etc. and calls that cadence's handler)
+         review_recording → captures/pending-review.log (date-stamped queue;
+                            the rounds — backstairs/rounds/scan.py — drains it.
+                            review/ was killed 2026-07-11; no cadence handlers)
          add_to_things    → handlers/add_to_things.py
          unknown          → captures/unknown.log
     5. append one line to captures/log.md
 
-Phase 1 of the build plan (claude_skills/recording-watcher/PLAN.md). Designed
+Phase 1 of the build plan (backstairs/recording-watcher/PLAN.md). Designed
 to be invoked manually for now; Phase 3 wraps this in launchd + fswatch.
 """
 from __future__ import annotations
@@ -32,11 +33,9 @@ import time
 from pathlib import Path
 
 JPR_DATE_DIR_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-JPR_FLAT_FILE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})_\d{2}_\d{2}_\d{2}\.[ma4wv]+$", re.IGNORECASE)
+FLAT_FILE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})[ _]\d{2}_\d{2}_\d{2}\.[A-Za-z0-9]+$", re.IGNORECASE)
 
 ROOT = Path(__file__).resolve().parent
-PROJECTS_ROOT = ROOT.parent.parent          # claude_skills/recording-watcher → projects/
-REVIEW_HANDLE = PROJECTS_ROOT / "review" / "handle.py"
 CAPTURES = ROOT / "captures"
 LOG = CAPTURES / "log.md"
 PENDING_REVIEW = CAPTURES / "pending-review.log"
@@ -124,29 +123,16 @@ def dispatch_add_to_things(transcript_file: Path, audio: Path, dry_run: bool) ->
         return {"raw": proc.stdout.strip()}
 
 
-def _log_pending_review(audio: Path, transcript_file: Path, classification: dict,
-                        reason: str) -> Path:
-    PENDING_REVIEW.parent.mkdir(parents=True, exist_ok=True)
-    line = json.dumps({
-        "timestamp": dt.datetime.now().isoformat(timespec="seconds"),
-        "audio": str(audio),
-        "transcript_file": str(transcript_file),
-        "classification": classification,
-        "fallback_reason": reason,
-    })
-    with PENDING_REVIEW.open("a") as f:
-        f.write(line + "\n")
-    return PENDING_REVIEW
-
-
 def _infer_recording_date(audio: Path) -> str | None:
     """Just Press Record uses two layouts: older recordings nest under a date
     dir (`…/Documents/YYYY-MM-DD/HH-MM-SS.m4a`), newer ones are flat files at
-    the Documents root (`YYYY-MM-DD_HH_MM_SS.wav`). Honor both. Return None
-    otherwise so the handler falls back to today (manual ad-hoc files)."""
+    the Documents root (`YYYY-MM-DD_HH_MM_SS.wav`). Just Press Record drops flat files too,
+    with a space between date and time (`YYYY-MM-DD HH_MM_SS.mp3`). Honor all
+    three. Return None otherwise so the queue falls back to today (manual
+    ad-hoc files)."""
     if JPR_DATE_DIR_RE.match(audio.parent.name):
         return audio.parent.name
-    m = JPR_FLAT_FILE_RE.match(audio.name)
+    m = FLAT_FILE_RE.match(audio.name)
     if m:
         return m.group(1)
     return None
@@ -154,34 +140,26 @@ def _infer_recording_date(audio: Path) -> str | None:
 
 def dispatch_review(audio: Path, transcript_file: Path, classification: dict,
                     dry_run: bool) -> dict:
-    """Hand off to projects/review/handle.py — the review factory. The factory
-    detects cadence (daily/weekly/...) from the transcript and dispatches to
-    the matching cadence's handle.py. On any error, fall back to pending-review.log
-    so nothing is lost."""
-    if not REVIEW_HANDLE.exists():
-        path = _log_pending_review(audio, transcript_file, classification,
-                                   f"review handler missing at {REVIEW_HANDLE}")
-        return {"stubbed": True, "logged_to": str(path)}
-
-    cmd = [sys.executable, str(REVIEW_HANDLE), str(transcript_file)]
-    recording_date = _infer_recording_date(audio)
-    if recording_date:
-        cmd += ["--date", recording_date]
+    """Queue the recording for the rounds. review/ was killed 2026-07-11 —
+    there are no daily/weekly cadence handlers anymore; the rounds
+    (backstairs/rounds/scan.py) reads pending-review.log and drains it.
+    `recording_date` comes from the filename, so the entry is stamped with
+    the day Nick recorded, not the day the pipeline ran."""
+    entry = {
+        "timestamp": dt.datetime.now().isoformat(timespec="seconds"),
+        "recording_date": _infer_recording_date(audio) or dt.date.today().isoformat(),
+        "audio": str(audio),
+        "transcript_file": str(transcript_file),
+        "classification": classification,
+    }
     if dry_run:
-        cmd.append("--dry-run")
+        return {"dry_run": True, "would_queue": entry}
 
-    try:
-        proc = _run_child(cmd)
-    except subprocess.CalledProcessError as e:
-        path = _log_pending_review(audio, transcript_file, classification,
-                                   f"review/handle.py exit {e.returncode}")
-        return {"stubbed": True, "logged_to": str(path),
-                "error": f"review/handle.py exit {e.returncode}"}
-
-    try:
-        return json.loads(proc.stdout.strip().splitlines()[-1])
-    except (json.JSONDecodeError, IndexError):
-        return {"raw": proc.stdout.strip()}
+    PENDING_REVIEW.parent.mkdir(parents=True, exist_ok=True)
+    with PENDING_REVIEW.open("a") as f:
+        f.write(json.dumps(entry) + "\n")
+    return {"queued_for_rounds": str(PENDING_REVIEW),
+            "recording_date": entry["recording_date"]}
 
 
 def dispatch_unknown(audio: Path, transcript: str, classification: dict) -> dict:
@@ -261,3 +239,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

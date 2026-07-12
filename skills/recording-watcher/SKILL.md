@@ -1,7 +1,7 @@
 ---
 name: recording-watcher
 description: Universal voice-capture endpoint. Watches the Just Press Record iCloud directory for new audio files; transcribes with local whisper; uses Claude (Opus) to classify the recording (review_recording | add_to_things | unknown); dispatches to the matching handler (write to review/daily/, push to Things via things.py, etc.). Acts both as an autonomous folder watcher (via launchd + fswatch) and a callable skill (`/recording-watcher <file>` for testing or manual processing). Designed so Nick can "just press record" anywhere and the system figures out where it belongs.
-status: stub
+status: active
 activity_log: captures/
 ---
 
@@ -19,7 +19,7 @@ The voice-capture endpoint. One press of the record button on the phone, anywher
 When invoked, run the orchestrator:
 
 ```bash
-~/.claude/skills-venv/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/recording-watcher/watch.py <audio-file-path>
+~/venv/default/bin/python /Users/dad/Documents/sandbox/backstairs/recording-watcher/watch.py <audio-file-path>
 ```
 
 Default behavior:
@@ -43,7 +43,7 @@ After the run, summarize for Nick in 2–4 lines: route, confidence, and either 
    - `add_to_things` — task / capture / "remind me to" / "I need to" shape
    - `unknown` — too short, ambient noise, off-topic; leave for triage
 5. Dispatches to the matching handler:
-   - `review_recording` → `review/handle.py` (the **review factory** — owns the daily/weekly/monthly/quarterly/annual dispatch based on Nick's spoken declaration). Watcher's job ends here; review system takes over.
+   - `review_recording` → date-stamped JSON line in `captures/pending-review.log`, drained by **the rounds** (backstairs/rounds/ — the review/ factory was killed 2026-07-10; reflection erupts, it is not scheduled). Watcher's job ends at the queue.
    - `add_to_things` → `handlers/add_to_things.py` — Opus generates `{best_title, clarity: clear|needs_research, description}`; calls `things.py add` with title + notes (description if any + transcript verbatim); archives audio
    - `unknown` → write a line to `captures/unknown.log` so Nick can review later
 6. Appends a one-line entry to `captures/log.md` for every dispatched recording: `<timestamp> | <route> | <confidence> | <one-liner>`.
@@ -63,7 +63,7 @@ The watch component (launchd + fswatch) is install glue, not the intelligence. T
 ## Files
 
 ```
-claude_skills/recording-watcher/
+backstairs/recording-watcher/
 ├── SKILL.md                              this file
 ├── PLAN.md                               build plan (decisions + phases)
 ├── watch.py                              launchd entry → invokes the skill headless
@@ -73,7 +73,7 @@ claude_skills/recording-watcher/
 ├── handlers/
 │   └── add_to_things.py                  Opus → title/clarity/description → things.py add
 │                                         (review_recording dispatches directly to
-│                                         review/handle.py — the review factory owns
+│                                         captures/pending-review.log — the rounds owns
 │                                         cadence routing, so no local handler needed)
 ├── install/
 │   └── im.bullock.recording-watcher.plist
@@ -84,4 +84,4 @@ claude_skills/recording-watcher/
 
 ## Status
 
-**Stub.** Phases 1 (manual end-to-end) and 2 (chat invocation) are built — `watch.py` processes a real recording and dispatches correctly, and `/recording-watcher <file>` is wired here. Still pending: Phase 3 (launchd + fswatch autonomous fire) and `review/handle.py` (the parallel review factory; for now `review_recording` just appends to `captures/pending-review.log`). Promote `status: stub → active` once Phase 3 has fired correctly on real recordings for a week without manual intervention.
+**Active.** All phases LIVE as of 2026-07-12: launchd + fswatch watch both the JPR container and iCloud `reviews/`, recordings are filename-dated, transcribed locally, and `review_recording` queues to `captures/pending-review.log` for the rounds — that IS the design (the review/ factory was killed 2026-07-10), not a stopgap. `/recording-watcher <file>` remains wired for manual/backlog processing. E2e-verified on a real recording the day this went live.

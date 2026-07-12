@@ -4,7 +4,7 @@
 # Default chapter: 01-configuration-attachment
 #
 # Layout convention (only MP3 syncs to iCloud; .tts is dot-prefixed so Obsidian Sync ignores it):
-#   LOCAL  ~/Documents/sandbox/projects/artifacts/.tts/formative-identity/
+#   LOCAL  ~/Documents/sandbox/artifacts/.tts/formative-identity/
 #          <chapter>.wav                                  (master, ~900 MB)
 #          <chapter>_turns/turn_NNNN_NARRATOR.wav         (per-turn cache for iteration)
 #          <chapter>.concat.txt + silence_400ms_24000.wav (build artifacts)
@@ -15,11 +15,11 @@ set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RENDERER_DIR="$(cd "$PROJECT_DIR/../renderer" && pwd)"
-VENV="$HOME/.claude/skills-venv"
+VENV="$HOME/venv/tts"
 
 CHAPTER="${1:-01-configuration-attachment}"
 NARRATOR_VOICE="en-Mike_man"  # proven from flex podcast / PLAYBOOK §3
-LOCAL_DIR="$HOME/Documents/sandbox/projects/artifacts/.tts/formative-identity"
+LOCAL_DIR="$HOME/Documents/sandbox/artifacts/.tts/formative-identity"
 ICLOUD_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/tts/formative-identity"
 
 mkdir -p "$LOCAL_DIR" "$ICLOUD_DIR"

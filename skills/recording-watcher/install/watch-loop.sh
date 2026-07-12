@@ -1,14 +1,16 @@
 #!/bin/bash
-# watch-loop.sh — long-lived fswatch driver for recording-watcher.
+# recording-watcher-watch-loop.sh
 #
-# Watches the Just Press Record iCloud directory and pipes every event
-# path to dispatch.sh. Single-process so launchd's KeepAlive=true does
-# the right thing (relaunches if fswatch dies).
+# launchd entry-point. Real file lives here (outside ~/Documents/) so
+# launchd-spawned bash isn't blocked by TCC at script-open time. The
+# canonical version lives at:
+#   ~/Documents/sandbox/backstairs/recording-watcher/install/watch-loop.sh
+# Keep them in sync.
 
 set -euo pipefail
 
 JPR_DIR="$HOME/Library/Mobile Documents/iCloud~com~openplanetsoftware~just-press-record"
-HERE="$(cd "$(dirname "$0")" && pwd)"
+REVIEWS_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/reviews"
 
 exec /opt/homebrew/bin/fswatch \
     --recursive \
@@ -16,4 +18,5 @@ exec /opt/homebrew/bin/fswatch \
     --event Updated \
     --event Renamed \
     "$JPR_DIR" \
-  | "$HERE/dispatch.sh"
+    "$REVIEWS_DIR" \
+  | /Users/dad/.local/bin/recording-watcher-dispatch.sh

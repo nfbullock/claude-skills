@@ -22,7 +22,7 @@ Status check for the skills ecosystem. Active skills stay quiet; stubs that have
    - **stale stub** — `status: stub`, untouched for >30d. Yell. Either develop it, retire it, or relax expectations.
    - **deprecated** — `status: deprecated`. Suggest cleanup.
    - **no status / no frontmatter** — SKILL.md exists but doesn't declare status. Retrofit needed.
-   - **no SKILL.md** — directory in claude_skills/ but missing SKILL.md. Broken.
+   - **no SKILL.md** — directory in backstairs/ but missing SKILL.md. Broken.
 
 ## How to invoke
 

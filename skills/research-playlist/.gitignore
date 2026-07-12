@@ -1,0 +1,5 @@
+credentials.json
+musicgraph.db
+musicgraph.db-wal
+musicgraph.db-shm
+.dna-cache/

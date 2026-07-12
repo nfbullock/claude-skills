@@ -25,7 +25,7 @@ from chunker import (  # noqa: E402
 PROJECT_ROOT = Path(__file__).resolve().parent
 SCRIPT_DIR = PROJECT_ROOT / "scripts"
 OUT_DIR = PROJECT_ROOT / "build"
-ARC_DIR = Path("/Users/dad/Documents/sandbox/projects/research/formative-identity")
+ARC_DIR = Path("/Users/dad/Documents/sandbox/research/formative-identity")
 
 SPEAKERS = ("NARRATOR",)
 

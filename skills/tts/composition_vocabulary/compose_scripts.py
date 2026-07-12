@@ -6,7 +6,7 @@ Reads files from sources/research/composition_vocabulary/, strips headers, prepe
 from __future__ import annotations
 from pathlib import Path
 
-SRC = Path("/Users/dad/Documents/sandbox/projects/research/composition_vocabulary")
+SRC = Path("/Users/dad/Documents/sandbox/research/composition_vocabulary")
 DST = Path(__file__).resolve().parent / "scripts"
 DST.mkdir(exist_ok=True)
 

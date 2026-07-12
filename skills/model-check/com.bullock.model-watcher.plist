@@ -5,9 +5,12 @@
     <key>Label</key>
     <string>com.bullock.model-watcher</string>
 
+    <!-- Invoke via the venv SYMLINK; TCC follows it to the real uv interpreter, so
+         Full Disk Access must be granted to:
+         /Users/dad/.local/share/uv/python/cpython-3.14.3-macos-aarch64-none/bin/python3.14 -->
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/dad/.claude/skills-venv/bin/python</string>
+        <string>/Users/dad/venv/default/bin/python</string>
         <string>/Users/dad/.local/bin/model_watcher.py</string>
     </array>
 

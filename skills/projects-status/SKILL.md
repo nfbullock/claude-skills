@@ -1,7 +1,7 @@
 ---
 name: projects-status
-description: Daily orientation report for Nick's projects/ root. Produces a single-sheet printable HTML brief — project health, hopper contents, an honest assessment of how he's doing, and a small list of recommended moves the data makes obvious. Cowork pattern — scan.py emits JSON, Claude builds the document fresh each run with real editorial and design judgment. Not the reaper (deep 2–4 week sweep). Not the daily/weekly review (that writes; this reads). Invoke as `/projects-status`.
-status: active
+description: Orientation report for Nick's projects/ root — problems-first. Produces a single-sheet printable HTML brief that spends its space on the QUIET projects (Nick knows the good ones because he's using them), with a re-entry card per quiet project — where it stopped, the likely snag, one physical next move — plus the hopper, an honest assessment, and a small list of recommended moves the data makes obvious. Cowork pattern — scan.py emits JSON, Claude builds the document fresh each run with real editorial and design judgment. Not the reaper (deep 2–4 week sweep). Invoke as `/projects-status`.
+status: deprecated
 ---
 
 # /projects-status
@@ -10,18 +10,18 @@ This is a **cowork skill**. The script is a data layer. You are the editor, desi
 
 ## What this is for
 
-Nick wants a daily brief — *"an idea of whether my projects are in a good state, what kind of next actions I have in the hopper, and a basic assessment of how I'm doing"* — that he can print, fold in his pocket, and mark up in pen on a walk. It's not a decision form. It's not a status pane in a dashboard. It's an editorial brief, like a single-sheet morning report a senior advisor would hand him before his day starts.
+Nick reoriented this brief on 2026-07-10: *"helps me find the problems because I know the good ones cause I am using them, helps me pick up where I left off when it has been a bit."* That's the spec in one sentence. The projects he's actively working need one line of acknowledgment; the page belongs to the quiet ones, and for each of those the job is a **door back in**, not a report card. He can print it, fold it in his pocket, and mark it up in pen. It's not a decision form. It's not a status pane in a dashboard. It's an editorial brief from someone who knows where everything was left.
 
-The voice is **Fred** per `review/SOUL.md` — terse, honest, framework-trap-aware, allergic to motivational-poster language. The document should sound like someone who knows him and won't waste his time.
+The voice is **Fred** per `backstairs/SOUL.md` — terse, honest, framework-trap-aware, allergic to motivational-poster language. Read that SOUL.md before composing; this skill is his field posture. The document should sound like someone who knows him and won't waste his time.
 
 ## Who it's for
 
-Nick — ENTP, design-heavy / execution-light by his own diagnosis, lives in the vault, uses Things 3 for next-actions, runs a daily/weekly review, has a network printer, marks paper in pen, gets unstuck on walks. Background from memory in `/Users/dad/.claude/projects/-Users-dad-Documents-sandbox/memory/` — especially `user_nick_profile`, `feedback_things_reschedule_as_workflow`, `feedback_claude_convo_as_next_action`, `feedback_projects_status_today_threshold`. Read those if the data needs interpretation you don't already have.
+Nick — ENTP, design-heavy / execution-light by his own diagnosis, lives in the vault, has a network printer, marks paper in pen, gets unstuck on walks. His own law (2026-07-10): *"I don't do things when they don't work well"* — so when a project is quiet, the first hypothesis is a broken tool or a missing printed unit in its loop, not a discipline failure. Background from memory in `/Users/dad/.claude/projects/-Users-dad-Documents-sandbox/memory/` — especially `user_nick_profile`, `feedback_things_reschedule_as_workflow`, `feedback_projects_status_today_threshold`, `feedback_atomic_print_loop_identity`, `feedback_dont_diagnose_avoidance`. Read those if the data needs interpretation you don't already have.
 
 ## How to run it
 
 ```bash
-~/.claude/skills-venv/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/projects-status/scan.py
+~/venv/default/bin/python /Users/dad/Documents/sandbox/backstairs/projects-status/scan.py
 ```
 
 JSON output. The fields you'll use:
@@ -33,23 +33,29 @@ JSON output. The fields you'll use:
 - `hopper{}` — by project: `unresolved[]`, `in_flight[]` (`[>]` Today, `[~]` rescheduled), `terminal_recent[]` (last 14 days).
 - `hopper_totals` — overall counts.
 - `candidates_ranked[]` — leverage-scored unresolved items (`score`, `score_breakdown`). For the optional push follow-up AND for picking which moves to recommend.
-- `weekly_review` — latest weekly review's `## Patterns feeding the queue` section. **Read this carefully.** It contains Nick's own framing of where he is. The assessment paragraph must ground here.
+- `weekly_review` — latest weekly review's `## Patterns feeding the queue` section. **Check its date before trusting it.** `review/` went dormant-lite 2026-07-10 (the weekly artifacts froze at 2026-05-17), so this field is lineage, not current framing. If it's older than ~14 days, the assessment grounds in observable signals only — don't quote a two-month-old self-diagnosis back at him as if it were this week's.
 
 ## The document — what good looks like
 
 A single sheet of letter-size paper. Self-contained HTML file (inline `<style>`, no external assets) so Nick can email it, AirDrop it, open from any device. Designed to print clean on a black laser printer with one accent color used sparingly.
 
-**Five things the document does:**
+**Six things the document does — problems-first, in this order:**
 
-1. **Tells Nick at a glance whether his projects are in good shape.** Which are moving, which have gone silent, which are foundational, which are under audit. The PROJECTS section. He should be able to skim it in 10 seconds.
+1. **Compresses the healthy projects to one line.** *"Moving: music, food, reading, travel."* That's the whole MOVING section — he's inside those projects already; the brief has nothing to tell him about them. Never spend a table row per moving project.
 
-2. **Shows him what's queued in the hopper.** Per-project, terse, abbreviated. Not full bodies — *phrases* that let him remember what each item is. The HOPPER section.
+2. **Gives every quiet project a RE-ENTRY CARD.** This is the heart of the document and gets the page's real estate. For each `silent` / `foundational_at_risk` / stalled project (skip `someday`/`archived` per house rules), a compact card with three lines:
+   - **Where it stopped** — the last real artifact or decision, dated. Pull from `log_excerpt` and, if that's thin, glance at the project's activity_log path for the newest file. Concrete: *"last lesson 06-12: chord voicings; retro never written"*, not *"inactive 28 days"*.
+   - **The likely snag** — the first hypothesis is always a broken loop, not a broken Nick: where's its printed unit, where's its debrief, is a tool in its chain broken (per his law: he doesn't do things that don't work well). One honest phrase.
+   - **One physical next move** — the smallest re-entry action, phrased as a thing a body does (*"print lesson 7 and take it to the garage"*), not an orientation ceremony. If the honest answer is "a Claude conversation to get the mojo going," say exactly that.
+   Cards are the "pick up where I left off when it's been a bit" surface. Order by (foundational, then days_silent descending). If more than ~6 qualify, card the sharpest 5–6 and one-line the rest.
 
-3. **Tells him the truth about how he's doing.** 2–4 sentences. Grounded in `weekly_review.patterns` plus the observable signals (foundational holding? silent cluster? capacity vs hopper size?). No motivational language. No "great job." No "you should." If the foundation is wobbly, say so. If a project he named super-important hasn't moved in six weeks, say that. The HOW YOU'RE DOING section.
+3. **Shows him what's queued in the hopper.** Per-project, terse, abbreviated. Not full bodies — *phrases* that let him remember what each item is. The HOPPER section.
 
-4. **Receipt for what Things did since last scan.** Only if `reconciliation.transitions_total > 0`. CHANGED block at the top of the page. Neutral voice on rescheduled items — Nick moves tasks across days deliberately; `[~]` is healthy planned work, never alarm-frame it.
+4. **Tells him the truth about how he's doing.** 2–4 sentences. Grounded in observable signals (foundational holding? silent cluster? capacity vs hopper size?) plus `weekly_review.patterns` ONLY if fresh (≤14 days — see the field note above). No motivational language. No "great job." No "you should." If the foundation is wobbly, say so. If a project he named super-important hasn't moved in six weeks, say that. The HOW YOU'RE DOING section.
 
-5. **A small, bounded prescription.** 3–5 RECOMMENDED MOVES the data makes obvious — stale hopper items to KILL, foundational-with-hard-date items to PUSH, super-important silent projects to NUDGE attention to, items needing a body rewrite (RESHAPE). Each move has an action verb, a target, a one-line reason, and visible space on the page (a `✓ ✗ …` mark column) for Nick to circle his decision in pen. **Cap at 5.** If the data justifies more, pick the sharpest signals. Don't include moves that require opinion — only ones grounded in observable signals (past dates, hard deadlines, foundational + at risk, named-but-not-moving, etc.).
+5. **Receipt for what Things did since last scan.** Only if `reconciliation.transitions_total > 0`. CHANGED block at the top of the page. Neutral voice on rescheduled items — Nick moves tasks across days deliberately; `[~]` is healthy planned work, never alarm-frame it.
+
+6. **A small, bounded prescription.** 3–5 RECOMMENDED MOVES the data makes obvious — stale hopper items to KILL, foundational-with-hard-date items to PUSH, super-important silent projects to NUDGE attention to, items needing a body rewrite (RESHAPE). Each move has an action verb, a target, a one-line reason, and visible space on the page (a `✓ ✗ …` mark column) for Nick to circle his decision in pen. **Cap at 5.** If the data justifies more, pick the sharpest signals. Don't include moves that require opinion — only ones grounded in observable signals (past dates, hard deadlines, foundational + at risk, named-but-not-moving, etc.).
 
 ## Design guidance — make real choices
 
@@ -60,6 +66,7 @@ You are the designer. Make the document feel like an editorial brief, not a data
 - **Color:** Mostly black on white. One accent color (a deep red like `#b00020` works) for silent / killed / alert states. A muted blue (`#1a5e9e`) for needs-audit / informational states. A muted gold (`#c79100` or `#8a6500`) for foundational stars and rescheduled glyphs. Use color sparingly — most of the page should be text on paper.
 - **Density:** Aim for a single page. Generous line-height (~1.4). Don't cram. If overflow looks likely, tighten margins before sacrificing whitespace.
 - **Pen-markability:** Every hopper item should have a `□` prefix so Nick can tick. Every recommended-move row should have a small mark column on the right (e.g., `✓ ✗ …`) for circling.
+- **Re-entry cards:** these carry the page — give them real card treatment (a hairline rule or subtle left border per card, project name + days-quiet in the header, the three lines labeled tersely: STOPPED / SNAG / NEXT). The NEXT line is the one Nick acts on; let it be visually the strongest line in the card.
 - **Print rules:** `@page { size: letter; margin: ~0.45in; }`. `@media print` adjustments where appropriate (e.g., bump black to pure `#000`). `page-break-inside: avoid` on the sections so they don't split awkwardly.
 - **Self-contained:** All CSS in a single inline `<style>` block. No web fonts, no external assets, no scripts. The file should render identically when AirDropped to a phone or printed from a different machine.
 
@@ -71,9 +78,10 @@ But: stay consistent enough that Nick recognizes the document as the same brief 
 
 The HOW YOU'RE DOING section is where this document either earns Nick's trust or loses it. Some rules:
 
-- Lead with the observable. *"Foundation is holding — review is moving and has a dated next move."* Not *"You're doing great keeping up with review."*
-- Name patterns Nick has already named in `weekly_review.patterns`. If he wrote "design-heavy / execution-light" in his last weekly, that's vocabulary you can use — it's his own framing, not yours imposed.
-- Name the named-but-not-moving project. If `weekly_review.patterns` calls out a project as high-importance and the scan shows it silent, surface that *specifically* by name. Don't generalize.
+- Lead with the observable. *"Music is carrying the month; three quiet soils have doors on this page."* Not *"You're doing great keeping up."*
+- Name patterns Nick has already named — but only from a *fresh* `weekly_review.patterns` (≤14 days) or from what he's said recently in-session. His own framing is vocabulary you can use; stale framing quoted back is worse than none.
+- Name the named-but-not-moving project *specifically*. If a foundational or high-priority project is silent, surface it by name. Don't generalize.
+- Diagnose the loop, never the man. If a project stalled, the assessment points at the broken tool or the missing printed unit, not at willpower (per `feedback_dont_diagnose_avoidance`).
 - Capacity read: `things_today_count` vs `hopper_totals.unresolved`. If Today is light and hopper is heavy, *"you're under-decided, not overloaded."* If Today is over 20, name it — but don't lecture.
 - Two short paragraphs is usually right. One if the data is sparse. Three only if there's genuinely a lot to say.
 
@@ -81,7 +89,7 @@ Things to never write: "Keep going!" / "You've got this!" / "Great work on X!" /
 
 ## Where the document goes
 
-Write to: `/Users/dad/Documents/sandbox/projects/artifacts/projects-status/YYYY-MM-DD.html`
+Write to: `/Users/dad/Documents/sandbox/artifacts/projects-status/YYYY-MM-DD.html`
 
 If a file with that name already exists (you ran the skill earlier today), append `-2`, `-3`, etc.
 
@@ -94,6 +102,8 @@ After writing, echo to terminal:
 Don't dump the whole HTML to terminal. The file IS the report; the terminal is the receipt.
 
 ## Optional follow-up
+
+**Things caution (2026-07-10, pending ballot ruling):** the Things re-role proposes banning project-pointer tasks — and hopper pushes with a `— <project>` suffix are exactly that shape. Until the ballot lands: dated atomic errands push fine; for anything project-pointer-shaped, keep it in the hopper and say why. The mechanics below still stand for when a push is right.
 
 If Nick reads the report and says *"push the Friday weekly draft"* / *"kill move 1 and 3"* / *"add 'photograph kids' art' to the great courses hopper"* — apply via the existing flow:
 
@@ -124,11 +134,12 @@ Context tags use the GTD vocabulary: `home`, `office`, `errand`, `phone`, `compu
 - **No transitions.** Omit the CHANGED block entirely — no "no changes since last scan" line.
 - **Today over 20.** Don't refuse the report. Render it. In the HOW YOU'RE DOING section, name the saturation explicitly: *"Today=23. The thing this report can't solve is the queue size. Want to triage Today before you read the rest?"*
 - **No recommended moves.** Omit the section.
-- **`weekly_review` is null** (no weekly review file found). The assessment paragraph leans entirely on observable signals; don't fabricate context.
+- **`weekly_review` is null or stale** (no file, or older than ~14 days — the normal case since `review/` went dormant 2026-07-10). The assessment paragraph leans entirely on observable signals; don't fabricate context and don't quote old weeklies as current.
+- **Nothing is quiet.** If every active project is moving, say so in one sentence, skip the re-entry cards entirely, and let the brief be short. A half-page brief on a good week is correct, not lazy.
 
 ## What this skill does NOT do
 
-- Propose new hopper candidates. The daily/weekly review does that.
+- Flood the hopper. With `review/` dormant (2026-07-10), this skill is the hopper's primary populator — but proposing a candidate is a deliberate act, bounded by the same cap as recommended moves, never a brainstorm dump. Read `next-actions.md` first so you don't duplicate what's queued.
 - Decide for Nick. The RECOMMENDED MOVES are *suggestions grounded in observable data*; Nick applies them or doesn't.
 - Bucket projects into KEEP/KILL/RESHAPE. That's the reaper, at 2–4 week cadence.
 - Write to STATE.md, READMEs, or activity logs.
@@ -146,6 +157,7 @@ Use the top-scored items as input to RECOMMENDED MOVES (specifically: PUSH for h
 ## Files
 
 - `scan.py` — JSON data layer.
-- `reconcile.py` — hopper↔Things state machine. Standalone: `~/.claude/skills-venv/bin/python reconcile.py [--dry-run]`.
+- `reconcile.py` — hopper↔Things state machine. Standalone: `~/venv/default/bin/python reconcile.py [--dry-run]`.
 - `backfill_uuids.py` — one-time legacy fixer. Already run.
 - `SKILL.md` — this file. The cowork prompt.
+

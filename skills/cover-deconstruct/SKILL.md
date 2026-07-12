@@ -1,6 +1,6 @@
 ---
 name: cover-deconstruct
-description: Use this skill whenever Nick asks to cover a song on the OP-1 Field, or any phrasing close to "I want to cover [song] by [artist]," "let's do a cover of...", "can we work [song] into a lesson," or "teach me [song]." This skill turns a song into a lesson by deconstructing it out loud — separating its essence from its decoration, quizzing Nick on what he hears, and producing a cover lesson at playground/lessons/NN-cover-slug.md that fits the OP-1 Field's tape-track constraints (four tape tracks on the device; lessons use three or four per the lesson contract). The point is producer's-ear training, not karaoke. ROUTING RULE: a cover request is shared with the song-recipe skill. Read playground/JOURNAL.md "Cover phase" first. If it says `deconstruct`, use THIS skill. If it says `recipe` (or is missing), defer to song-recipe. Nick never says skill names — he just asks naturally.
+description: Use this skill whenever Nick asks to cover a song on the OP-1 Field, or any phrasing close to "I want to cover [song] by [artist]," "let's do a cover of...", "can we work [song] into a lesson," or "teach me [song]." This skill turns a song into a lesson by deconstructing it out loud — separating its essence from its decoration, quizzing Nick on what he hears, and producing a cover lesson at field/lessons/NN-cover-slug.md that fits the OP-1 Field's tape-track constraints (four tape tracks on the device; lessons use three or four per the lesson contract). The point is producer's-ear training, not karaoke. ROUTING RULE: a cover request is shared with the song-recipe skill. Read field/JOURNAL.md "Cover phase" first. If it says `deconstruct`, use THIS skill. If it says `recipe` (or is missing), defer to song-recipe. Nick never says skill names — he just asks naturally.
 status: active
 ---
 
@@ -16,7 +16,7 @@ The PB&J contract, the lesson loop, and the coach tone in `CLAUDE.md` still appl
 
 ## Before you start: read the room
 
-Follow `../cover-common/prelude.md` — playground/JOURNAL.md read, WebSearch song lookup, local-analysis MCP detection, readiness check. Then add these deconstruct-specific reads:
+Follow `../cover-common/prelude.md` — field/JOURNAL.md read, WebSearch song lookup, local-analysis MCP detection, readiness check. Then add these deconstruct-specific reads:
 
 1. **Read `references/quiz-calibration.md`.** It tells you, given Nick's count of *Listening skills learned*, how much to reveal vs. withhold. This is the single most important thing to get right — quiz too easy and he learns nothing, quiz too hard and he stalls.
 
@@ -87,7 +87,7 @@ Translate to the OP-1's tape tracks (three or four per the lesson contract) per 
 
 ## The lesson file
 
-When the deconstruction is done, write to `playground/lessons/NN-cover-<slug>.md` using `../cover-common/lesson-template.md`. The deconstruct-specific deltas:
+When the deconstruction is done, write to `field/lessons/NN-cover-<slug>.md` using `../cover-common/lesson-template.md`. The deconstruct-specific deltas:
 
 - **Section 1 (The song):** title, artist, the one-sentence "why this song" Nick gave you in Step 1. When he opens the file later, he sees his own gut answer.
 - **Section 2 (Reference card):** frame as *"What you heard vs. what's there"* — his guesses on the left, the reality on the right, with the specific cue named for each one he missed. Three or four rows max — only the ones that actually taught something.
@@ -123,3 +123,4 @@ Follow the shared retrospective flow at the bottom of `../cover-common/lesson-te
 - `listening-layers.md` — the six-pass, form-first producer's-ear walkthrough protocol
 - `theory-pass.md` — formal music theory vocabulary for Layer 2
 - `quiz-calibration.md` — how to adapt quiz difficulty based on Nick's *Listening skills learned* count
+

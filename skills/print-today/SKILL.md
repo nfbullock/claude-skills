@@ -13,7 +13,7 @@ Pulls today's Things 3 items, formats as a minimal printable sheet, sends to the
 When Nick types `/print-today`:
 
 ```bash
-~/.claude/skills-venv/bin/python /Users/dad/Documents/sandbox/projects/claude_skills/print-today/print_today.py
+~/venv/default/bin/python /Users/dad/Documents/sandbox/backstairs/print-today/print_today.py
 ```
 
 Add `--dry-run` to preview the formatted sheet in the terminal without sending to the printer.
@@ -26,7 +26,7 @@ Single page, plain text, monospace. Title + date header, checkboxes for each ite
 
 ## Implementation notes
 
-- Reads via `claude_skills/things/things.py today` (sqlite, read-only — won't lag in-app edits by more than a few seconds).
+- Reads via `backstairs/things/things.py today` (sqlite, read-only — won't lag in-app edits by more than a few seconds).
 - Weekend detection: Python `datetime.date.today().weekday() >= 5`.
 - Print mechanism: `lp` (CUPS). Uses system default printer (Brother_HL_L6200DW_series at time of build, but the skill doesn't hardcode it).
 - Long titles wrap to a 31-char column; subsequent lines indented under the title.

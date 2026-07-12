@@ -64,7 +64,7 @@ Essence *usually* lives in the Song layer, and the Arrangement/Track is *usually
 
 These are genre-aware corollaries of the song/arrangement/track frame above — *priors*, not rules. The specific song and Nick's specific pull override the pattern.
 
-- The **vocal melody and lyric hook** are *often* essence — but not always. If Nick is planning to rewrite the lyrics (a contrafact move, like the McHugh "Love Come Save Me" entry in `playground/JOURNAL.md`), the original lyric is **not** essence; the melody alone is. Ask Nick what he's keeping.
+- The **vocal melody and lyric hook** are *often* essence — but not always. If Nick is planning to rewrite the lyrics (a contrafact move, like the McHugh "Love Come Save Me" entry in `field/JOURNAL.md`), the original lyric is **not** essence; the melody alone is. Ask Nick what he's keeping.
 - The **chord motion under the chorus** is often essence — especially if Nick named the harmony when he said "why this song."
 - The exact **drum sound**, the specific **synth patch**, the **vocal effects**, **ambience pads**, **second guitar** — almost always decoration.
 - The **rhythmic feel** (halftime vs. straight, swung vs. straight, 6/8 vs. 4/4) is *sometimes* essence even though it sounds like decoration. If the song's emotional weight rides the feel, keep it. If Nick is reaching for something else (a half-time-invert reimagining, say), the feel can move.
@@ -89,3 +89,4 @@ Do not anchor replacement choices on what the original used. Anchor them on what
 ## Function over timbre, every time
 
 When the OP-1 can't render a sound from the original (the breathy vocal, the analog-synth sweep, the live drum room), don't apologize. Pick the OP-1 voice that captures the **function** of that sound. The breathy vocal is the song's hook → it goes on top, played by whatever OP-1 voice can carry a melody. The function lives in the song's structure; the timbre is decoration.
+

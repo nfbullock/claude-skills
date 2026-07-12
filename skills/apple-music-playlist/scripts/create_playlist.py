@@ -4,7 +4,7 @@
 Two modes:
   --input <json>     Create a playlist from a tracks JSON (the normal path).
   --recent <Domain>  Print the tracks used in the last N playlists for a domain
-                     (Office / Gym / Playground / Stage), so the curator can
+                     (Office / Gym / Field / Stage), so the curator can
                      avoid recycling them. Reads the auto-maintained ledger.
 
 Every successful creation appends its landed tracks to `used_tracks.jsonl`
@@ -17,6 +17,7 @@ import datetime
 import json
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # allow run from any cwd
@@ -29,7 +30,7 @@ LEDGER = Path(__file__).resolve().parent.parent / "used_tracks.jsonl"
 
 def domain_of(playlist_name: str) -> str:
     """First alpha run of the name — 'Office L05: ...' -> 'Office'."""
-    m = re.match(r"[A-Za-z]+", playlist_name.strip())
+    m = re.search(r"[A-Za-z]+", playlist_name)  # skip a leading emoji/space
     return m.group(0).lower() if m else ""
 
 
@@ -49,10 +50,18 @@ def append_ledger(domain, name, playlist_id, tracks):
         pass  # the ledger is a convenience, not load-bearing for creation
 
 
+ARTIST_WINDOW = 15      # playlists (all domains) scanned for artist over-exposure
+ARTIST_SOFT_BAN = 3     # appearances in the window that flag an artist "overexposed"
+
+
 def recent(domain: str, n: int):
-    """Print the ban list: tracks from the last n playlists in this domain."""
+    """Print the ban list: tracks from the last n playlists in this domain — PLUS
+    artist-appearance counts over the last ARTIST_WINDOW playlists across ALL domains.
+    The track ban is hard (no exact repeats); the artist view is a SOFT signal: an
+    overexposed artist must earn its next slot, it is never auto-banned (the exclusion
+    unit is the worn track, not the artist)."""
     domain = domain.lower()
-    entries = []
+    all_entries, entries = [], []
     if LEDGER.exists():
         with open(LEDGER) as f:
             for line in f:
@@ -63,17 +72,36 @@ def recent(domain: str, n: int):
                     e = json.loads(line)
                 except json.JSONDecodeError:
                     continue
+                if not isinstance(e, dict):
+                    continue
+                all_entries.append(e)
                 if e.get("domain") == domain:
                     entries.append(e)
     recent_entries = entries[-n:]
     ban = []
     seen = set()
     for e in recent_entries:
-        for t in e.get("tracks", []):
+        for t in (e.get("tracks") or []):
+            if not isinstance(t, dict):
+                continue
             key = f"{t['artist']} — {t['title']}"
             if key not in seen:
                 seen.add(key)
                 ban.append(key)
+
+    # case-folded so this counter and graph.py's served_artist_counts() agree
+    artist_counts = Counter()
+    display = {}
+    window = all_entries[-ARTIST_WINDOW:]
+    for e in window:
+        for t in (e.get("tracks") or []):
+            if isinstance(t, dict) and t.get("artist"):
+                k = t["artist"].strip().lower()
+                display.setdefault(k, t["artist"].strip())
+                artist_counts[k] += 1
+    overexposed = [{"artist": display[a], "appearances": c}
+                   for a, c in artist_counts.most_common() if c >= ARTIST_SOFT_BAN]
+
     print(json.dumps({
         "status": "ok",
         "domain": domain,
@@ -83,6 +111,13 @@ def recent(domain: str, n: int):
             "them — pick fresh. (At most one may return if genuinely irreplaceable.)"
         ),
         "ban_list": ban,
+        "artist_frequency_window": len(window),
+        "overexposed_artists": overexposed,
+        "artist_note": (
+            f"Artists appearing >={ARTIST_SOFT_BAN}x in the last {len(window)} playlists "
+            "(all domains). SOFT signal: they must earn their next slot on concept-fit; "
+            "never an artist ban."
+        ),
         "recent_playlists": [
             {"name": e["playlist_name"], "date": e.get("date"),
              "tracks": [f"{t['artist']} — {t['title']}" for t in e.get("tracks", [])]}
@@ -165,7 +200,7 @@ def main():
     parser.add_argument("--input", help="Path to tracks JSON (create mode)")
     parser.add_argument("--recent", metavar="DOMAIN",
                         help="Print recently-used tracks for a domain "
-                             "(Office/Gym/Playground/Stage) and exit")
+                             "(Office/Gym/Field/Stage) and exit")
     parser.add_argument("--n", type=int, default=3,
                         help="How many recent playlists to consider (default 3)")
     args = parser.parse_args()
@@ -180,3 +215,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

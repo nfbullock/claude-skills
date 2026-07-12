@@ -20,9 +20,9 @@ import time
 from pathlib import Path
 
 # Resolve the music project root. The skill lives at
-# projects/claude_skills/music-status/; the music project is a sibling under
+# backstairs/music-status/; the music project is a sibling under
 # projects/music/. Allow an env-independent walk.
-ROOT = Path("/Users/dad/Documents/sandbox/projects/music")
+ROOT = Path("/Users/dad/Documents/sandbox/music")
 
 
 def _age_days(p: Path) -> float:
@@ -85,8 +85,8 @@ def scan_gym() -> dict:
     }
 
 
-def scan_playground() -> dict:
-    d = ROOT / "playground"
+def scan_field() -> dict:
+    d = ROOT / "field"
     lessons = sorted((d / "lessons").glob("*.md"))
     journal = _read(d / "JOURNAL.md")
     phase = ""
@@ -110,14 +110,14 @@ def scan_playground() -> dict:
             uniq.append(p)
     songs = re.findall(r"^- Song \d+", _section(journal, "Songs finished"), re.M)
     return {
-        "track": "playground",
+        "track": "field",
         "lesson_count": len(lessons),
         "latest": _newest(lessons),
         "phase": phase,
         "cover_phase": cover_phase,
         "songs_finished": len(songs),
         "active_cover_pulls": uniq,
-        "retro_required": True,  # playground blocks next lesson on prior retro
+        "retro_required": True,  # field blocks next lesson on prior retro
     }
 
 
@@ -184,7 +184,7 @@ def main() -> int:
 
     report = {
         "scanned_at": time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-        "tracks": [scan_gym(), scan_playground(), scan_stage(), scan_office()],
+        "tracks": [scan_gym(), scan_field(), scan_stage(), scan_office()],
         "sources": scan_sources(),
     }
 
@@ -222,3 +222,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+

@@ -155,3 +155,4 @@ class AppleMusic:
             slug = quote(attrs.get("name", "playlist").lower().replace(" ", "-"))
             return f"https://music.apple.com/{self.storefront}/playlist/{slug}/{global_id}"
         return f"https://music.apple.com/library/playlist/{playlist_data['id']}"
+

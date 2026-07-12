@@ -28,7 +28,7 @@ brew install fswatch        # not currently installed
 
 ```bash
 # 1. Symlink (or copy) the plist into ~/Library/LaunchAgents/
-ln -s "$HOME/Documents/sandbox/projects/claude_skills/recording-watcher/install/com.bullock.recording-watcher.plist" \
+ln -s "$HOME/Documents/sandbox/backstairs/recording-watcher/install/com.bullock.recording-watcher.plist" \
       "$HOME/Library/LaunchAgents/com.bullock.recording-watcher.plist"
 
 # 2. Load the job (also starts it because RunAtLoad=true)
@@ -46,14 +46,14 @@ The job runs as your user (not root). It inherits the user keychain — same aut
 - `~/Library/Logs/recording-watcher/launchd.err` — fswatch and shell errors
 - `~/Library/Logs/recording-watcher/dispatch.log` — one line per dispatched .m4a + the full `claude -p` JSON envelope
 - `~/Library/Logs/recording-watcher/seen.txt` — dedup ledger (every path the dispatcher has fired on)
-- `claude_skills/recording-watcher/captures/log.md` — the skill's own activity log (one line per recording it processed)
+- `backstairs/recording-watcher/captures/log.md` — the skill's own activity log (one line per recording it processed)
 
 ## Manual smoke test (no launchd)
 
 Before installing, you can prove the pipe works in the foreground:
 
 ```bash
-bash /Users/dad/Documents/sandbox/projects/claude_skills/recording-watcher/install/watch-loop.sh
+bash /Users/dad/Documents/sandbox/backstairs/recording-watcher/install/watch-loop.sh
 # In another terminal, drop or `touch` a .m4a inside the JPR dir.
 # Watch dispatch.log for the fire.
 # Ctrl-C to stop.

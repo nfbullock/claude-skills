@@ -1,6 +1,6 @@
 ---
 name: song-recipe
-description: Use this skill whenever Nick asks to cover, reinterpret, or "do" a song on the OP-1 Field — any phrasing close to "let's cover [song] by [artist]," "give me a recipe for [song]," "I want to do [song]," "help me figure out [song]," "what would [song] sound like on the OP-1," "I've been listening to [song], can we work with it." This is the **training-wheels cover skill** — the coach performs the breakdown, names vocabulary inline so Nick learns the language while reading, generates 2–3 reimagining directions, picks one, and writes a fully recipe-style lesson at playground/lessons/NN-cover-slug.md. ROUTING RULE: a cover request is shared with the cover-deconstruct skill. Read playground/JOURNAL.md "Cover phase" first. If it says `recipe` (or is missing), use THIS skill. If it says `deconstruct`, defer to cover-deconstruct. Nick never says skill names — he just asks naturally.
+description: Use this skill whenever Nick asks to cover, reinterpret, or "do" a song on the OP-1 Field — any phrasing close to "let's cover [song] by [artist]," "give me a recipe for [song]," "I want to do [song]," "help me figure out [song]," "what would [song] sound like on the OP-1," "I've been listening to [song], can we work with it." This is the **training-wheels cover skill** — the coach performs the breakdown, names vocabulary inline so Nick learns the language while reading, generates 2–3 reimagining directions, picks one, and writes a fully recipe-style lesson at field/lessons/NN-cover-slug.md. ROUTING RULE: a cover request is shared with the cover-deconstruct skill. Read field/JOURNAL.md "Cover phase" first. If it says `recipe` (or is missing), use THIS skill. If it says `deconstruct`, defer to cover-deconstruct. Nick never says skill names — he just asks naturally.
 status: active
 ---
 
@@ -8,7 +8,7 @@ status: active
 
 You are giving Nick a complete cover-lesson recipe for a song he's brought you. He doesn't yet have the vocabulary or the ear training to do the deconstruction himself — that's what the sibling `cover-deconstruct` skill is for, later. Your job here is the opposite of a Socratic dialogue: do the work *for* him, but **show your work** in plain language so he absorbs the producer's-ear vocabulary by reading. Every term, the first time it appears, gets a one-clause definition, casually, in line. By the tenth recipe, he's heard "Roman numeral analysis," "halftime feel," "modal interchange," and "voice leading" enough times to start using them.
 
-This skill complements `cover-deconstruct`. The `playground/JOURNAL.md` *Cover phase* field arbitrates which one fires — you do not need Nick to invoke a skill name.
+This skill complements `cover-deconstruct`. The `field/JOURNAL.md` *Cover phase* field arbitrates which one fires — you do not need Nick to invoke a skill name.
 
 The PB&J contract, the lesson loop, and the coach tone in `CLAUDE.md` still apply on top of whatever this skill produces.
 
@@ -16,7 +16,7 @@ The PB&J contract, the lesson loop, and the coach tone in `CLAUDE.md` still appl
 
 ## Before you start: read the room
 
-Follow `../cover-common/prelude.md` — playground/JOURNAL.md read, WebSearch song lookup, local-analysis MCP detection, readiness check. Then add these recipe-specific reads:
+Follow `../cover-common/prelude.md` — field/JOURNAL.md read, WebSearch song lookup, local-analysis MCP detection, readiness check. Then add these recipe-specific reads:
 
 1. **Read `references/vocabulary.md`.** This is the master list of music terms with the plain-language definitions you'll cite inline. When you introduce a term in the recipe, the gloss should match what's in that file so Nick gets consistent language across covers. If a term isn't in that file but you need it, add it before continuing.
 
@@ -88,7 +88,7 @@ If Nick has retrospective notes saying he struggled with X, pick the direction t
 
 ## The lesson file
 
-When you've decided the direction, write to `playground/lessons/NN-cover-<slug>.md` using `../cover-common/lesson-template.md`. The recipe-specific deltas:
+When you've decided the direction, write to `field/lessons/NN-cover-<slug>.md` using `../cover-common/lesson-template.md`. The recipe-specific deltas:
 
 - **Section 1 (The song):** one sentence on the original, one sentence on what your version will do differently. Anchors the lesson.
 - **Section 2 (Reference card):** framed as *"The breakdown (in brief)"* — three or four bullets pulled from the inline breakdown above. The full breakdown lives in the chat; this section is the card he glances at while recording.
@@ -101,7 +101,7 @@ When you've decided the direction, write to `playground/lessons/NN-cover-<slug>.
 
 After you've written the breakdown (in chat) and the lesson file (on disk), close with **one short message**:
 
-- File path: `playground/lessons/NN-cover-<slug>.md`.
+- File path: `field/lessons/NN-cover-<slug>.md`.
 - The one-sentence recipe summary ("Sequencer-flipped Chris Smither in C minor, 78 BPM, drums + cluster pad + endless-sequenced bass, 32 bars, vintage tape style").
 - Time budget: ~60–90 min.
 - One closing line — *not* a question. He'll go make the song.
@@ -137,3 +137,4 @@ Follow the shared retrospective flow at the bottom of `../cover-common/lesson-te
 ### Skill-specific (`references/`)
 - `vocabulary.md` — master list of music terms with plain-language definitions for inline citation
 - `reimagining-directions.md` — taxonomy of OP-1 reinterpretation moves; pick 2–3 per song
+

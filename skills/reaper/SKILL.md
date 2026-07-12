@@ -1,12 +1,12 @@
 ---
 name: reaper
-description: The recurring open-loop sweep — externalizes everything Nick has committed to (or implicitly hung onto) across the vault, Claude history, and Things 3, classifies each loop, and hands back a printable document to mark up in pen with KEEP/KILL/RESHAPE/DEFER decisions. Heavy operation (7–9 hours of sweep work). Cadence is every 2–4 weeks; the prompt refuses to run inside 14 days without explicit confirmation. Invoke as /reaper or when Nick asks to run the reaper or do a deep sweep.
+description: The recurring open-loop sweep — externalizes everything Nick has committed to (or implicitly hung onto) across the vault, Claude history, and Things 3, classifies each loop, and hands back a two-layer artifact — an exhaustive LEDGER on disk (never printed) and a designed HTML BALLOT (≤8 pages, printed duplex) marked up in pen with KEEP/KILL/RESHAPE/DEFER. The sweep is ~1 hour of orchestrated parallel readers; the budget that matters is Nick's ≤30 pen-minutes. Cadence is every 2–4 weeks; the prompt refuses to run inside 14 days without explicit confirmation. Invoke as /reaper or when Nick asks to run the reaper or do a deep sweep.
 status: active
 ---
 
 # reaper
 
-**This is a deep operation, not a quick skill.** A single run is a 7–9 hour sweep over the entire vault, recent Claude conversation history, and Things 3. Don't fire it inside other work. Open a fresh Claude Code window dedicated to the sweep.
+**This is a deep operation, not a quick skill.** A single run sweeps the entire vault, recent Claude conversation history, and Things 3 — roughly an hour of orchestrated parallel readers plus composition (the 2026-07-10 run used 37 readers; the old "7–9 hours" estimate predates orchestration). Don't fire it inside other work. Open a fresh Claude Code window dedicated to the sweep. The budget that actually matters is on the other side of the paper: **Nick's pen pass is ≤ 30 minutes by design.**
 
 ## Why this exists
 
@@ -27,21 +27,35 @@ The cadence is **every 2–4 weeks**. `RUN_LOG.md` tracks history; `PROMPT.md` r
 
 ## How to run — first pass
 
-1. **Stage claude.ai exports if recent.** If there's been claude.ai activity worth sweeping in the last sweep window: claude.ai → Settings → Privacy → Export data → wait for email → drop the zip into `~/Documents/sandbox/projects/claude_skills/reaper/sources/claude_ai_exports/`. The prompt picks up the freshest zip automatically. If you skip this, the reaper still runs over Claude Code / Cowork history; you just won't get claude.ai threads.
+1. **Stage claude.ai exports if recent.** If there's been claude.ai activity worth sweeping in the last sweep window: claude.ai → Settings → Privacy → Export data → wait for email → drop the zip into `~/Documents/sandbox/backstairs/reaper/sources/claude_ai_exports/`. The prompt picks up the freshest zip automatically. If you skip this, the reaper still runs over Claude Code / Cowork history; you just won't get claude.ai threads.
 
 2. **Read `PROMPT.md` and follow it end-to-end.** It is the first-pass sweep prompt. Don't paraphrase, don't summarize — execute.
 
-3. **Output lands in `~/Documents/sandbox/projects/artifacts/reaper/<YYYY-MM-DD>/`.** First-pass file is `reaper_<date>.md`; supplements (if any) appear as `reaper_<date>_supplement_*.md`. Append a line to `RUN_LOG.md` with the run timestamp.
+3. **Output lands in `~/Documents/sandbox/artifacts/reaper/<YYYY-MM-DD>/`.** Two layers, strictly separated:
+   - `reaper_<date>.md` — **the LEDGER.** Exhaustive, full provenance, globally numbered. The walkthrough and the next sweep's diff read it. **Never printed.**
+   - `ballot_<date>.{html,pdf}` + `ballot_curation.json` — **the BALLOT.** The designed decision surface (≤ 8 pages, system rulings + big rocks on page 1, project groups, auto-KILL strip). The only paper Nick touches. Numbering is identical to the ledger.
 
-4. **Print the output on letter paper. Mark it up with a pen.** This is the binding step. The pen converts surfaced loops into KEEP / KILL / RESHAPE / DEFER decisions.
+   Append a line to `RUN_LOG.md` with the run timestamp.
 
-## How to run — second pass (reorganization)
+4. **Print the BALLOT duplex (shim-api `/print`). Mark it up with a pen.** This is the binding step. The pen converts surfaced loops into KEEP / KILL / RESHAPE / DEFER decisions. Mark precedence is printed on the ballot: line beats group; blank = undecided.
 
-When a first pass gets messy — supplements bolted on, the same loop appearing in three sections, deadlines buried inside long STALE lists — read and execute `PROMPT_SECOND_PASS.md`. It does NOT re-scan sources; it integrates supplements, dedups to a single home per loop, pulls deadlines into a Section 0, adds a domain index, and names the single decision that disposes of each cluster.
+## Regenerating or re-cutting a ballot (no re-sweep)
 
-Output: `projects/artifacts/reaper/<original_date>/reaper_<original_date>_v2.md`. The v1 stays as the audit trail; the v2 supersedes it for printing.
+The ballot is a pure function of the ledger + curation. To re-render (or re-cut the grouping) at any time:
 
-You only need a v2 when v1 is hard to read on paper. A clean v1 doesn't need a v2.
+```bash
+~/venv/default/bin/python scripts/render_ballot.py \
+  artifacts/reaper/<date>/reaper_<date>.md \
+  artifacts/reaper/<date>/ballot_<date>.html \
+  artifacts/reaper/<date>/ballot_<date>.pdf \
+  --curation artifacts/reaper/<date>/ballot_curation.json
+```
+
+The renderer parses the ledger format directly, validates that the curation accounts for every ledger item exactly once, and hard-fails past 8 pages. Edit the curation JSON to re-group; never touch the ledger. PDF renders via a headless Chromium-family browser (Brave on this machine; `BALLOT_CHROMIUM` overrides). `--redline notes.md` appends a design-notes page; `--no-pdf` for HTML-only. Without `--curation` it falls back to classification-grouping — correct coverage, uncurated.
+
+## How to run — second pass (reorganization) — LEGACY
+
+`PROMPT_SECOND_PASS.md` predates the two-layer contract (it reorganized a messy printed v1). Kept for lineage. If a ballot reads badly, the fix is now a curation edit + re-render, not a v2 document.
 
 ## After the print-out
 
@@ -64,9 +78,11 @@ Every decision item in reaper output gets a sequential global `#NN` prefix so Ni
 
 ## Files
 
-- `PROMPT.md` — the first-pass sweep prompt (run this every 2–4 weeks).
-- `PROMPT_SECOND_PASS.md` — the reorganization prompt (run this against a messy v1).
+- `PROMPT.md` — the first-pass sweep prompt (run this every 2–4 weeks). Includes the two-layer output contract and the ballot-curation rules.
+- `scripts/render_ballot.py` — deterministic ledger→ballot renderer (HTML + PDF, coverage-validated, ≤8-page gate). Stdlib + a headless Chromium for PDF.
+- `PROMPT_SECOND_PASS.md` — legacy reorganization prompt (pre-ballot lineage; superseded by curation edits).
 - `RUN_LOG.md` — one line per run; the prompt reads this to enforce cadence.
 - `sources/` — out-of-band inputs (claude.ai exports). See `sources/README.md`.
 
 Outputs do **not** live here — they live in `projects/artifacts/reaper/<date>/` per the artifacts convention.
+

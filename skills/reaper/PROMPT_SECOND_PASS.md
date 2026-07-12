@@ -1,10 +1,15 @@
 # Reaper — Second Pass (Reorganization)
 
+*Rebased 2026-07-12 for the two-layer output (ledger + ballot, adopted 2026-07-10)
+and the flat vault. The second pass reorganizes the LEDGER, then RE-AUTHORS the
+ballot curation and re-renders the printed ballot. The ledger itself is NEVER
+printed.*
+
 This is a re-runnable prompt for cleaning up a reaper sweep that has become disorganized. Run it after a fresh `PROMPT.md` sweep, especially when:
 
 - The first pass produced supplements (e.g., from a late-arriving source like a claude.ai export, or a folder the first-pass agent missed)
 - Classifications drifted as new context arrived mid-pass
-- The output exceeded ~80 loops and became hard to navigate on paper
+- The ledger exceeded ~80 loops and the ballot's curation stopped reflecting it (rocks reading like a to-do list is the tell)
 - The same loop appears in three or more sections via cross-references
 - A new bit of context (illness, deadline, life event) reframes how prior loops should be read
 
@@ -14,7 +19,7 @@ This is a re-runnable prompt for cleaning up a reaper sweep that has become diso
 
 # Reaper Second Pass — Run Instructions
 
-You are running a one-shot reorganization pass over the most recent reaper output for me (Nick). The deliverable is a single printable markdown document that supersedes the prior one for pen markup.
+You are running a one-shot reorganization pass over the most recent reaper output for me (Nick). The deliverable is TWO layers, same as the first pass: a reorganized v2 LEDGER (machine/audit layer — never printed) and a re-authored + re-rendered v2 BALLOT (the only paper; ≤8 pages duplex). The v2 ballot supersedes the prior print for pen markup.
 
 This is **not a new sweep.** Do not re-scan the vault, Claude history, Things 3, claude.ai exports, or any other source. The first pass already did the externalization; this pass is about making the output usable on paper.
 
@@ -23,9 +28,9 @@ If you catch yourself wanting to add a loop you "noticed" or to surface new find
 ## Input
 
 Read the most recent first-pass file in:
-**`/Users/dad/Documents/sandbox/projects/artifacts/reaper/`**
+**`/Users/dad/Documents/sandbox/artifacts/reaper/`**
 
-Outputs are organized as `<YYYY-MM-DD>/reaper_<YYYY-MM-DD>.md` (with `_v2`, `_v3` suffixes for reorganizations). Pick the freshest dated subdirectory and read the file with no `_v2`, `_v3` suffix. Read it in full, including any supplements appended at the bottom. Read `/Users/dad/Documents/sandbox/projects/claude_skills/reaper/RUN_LOG.md` for run history.
+Outputs are organized as `<YYYY-MM-DD>/reaper_<YYYY-MM-DD>.md` (with `_v2`, `_v3` suffixes for reorganizations). Pick the freshest dated subdirectory and read the file with no `_v2`, `_v3` suffix. Read it in full, including any supplements appended at the bottom. Also read that sweep's `ballot_curation.json` (the ballot's editorial layer — you will re-author it after the ledger settles). Read `/Users/dad/Documents/sandbox/backstairs/reaper/RUN_LOG.md` for run history.
 
 If `artifacts/reaper/` is empty or no first-pass file exists, output a single line saying "No first-pass output found. Run PROMPT.md first." and stop.
 
@@ -99,7 +104,11 @@ The reader resolves these in pen.
 
 ## Pen-friendliness audit (apply throughout, but verify after Section 8)
 
-Each item needs:
+The ledger's item format doubles as a renderer contract: keep the `#NN` item
+markers, `Title:` field, `Last moved:` dates, and `## Section N — NAME` headers
+exactly as PROMPT.md specifies, or `render_ballot.py` breaks. The pen ultimately
+lands on the BALLOT, but the ledger keeps these affordances for the post-pen
+walkthrough. Each item needs:
 - A checkbox row: `[ ] KEEP   [ ] KILL   [ ] RESHAPE   [ ] DEFER`
 - A Title line
 - Source / class / domain / last-activity metadata as appropriate to the class
@@ -122,16 +131,32 @@ Each item needs:
 ## Output
 
 Save to:
-**`/Users/dad/Documents/sandbox/projects/artifacts/reaper/<original_date>/reaper_<original_date>_v2.md`**
+**`/Users/dad/Documents/sandbox/artifacts/reaper/<original_date>/reaper_<original_date>_v2.md`**
 
 Where `<original_date>` matches the source file's date (not today's date). If `_v2` already exists, use `_v3`, etc. Never overwrite.
 
-Print constraints, identical to the first-pass sweep:
+Ledger constraints, identical to the first-pass sweep:
 
 - Page breaks (`\n\n---\n\n`) before each `## Section N` header.
 - No emoji. No tables. No bold paragraphs. Plain text inside sections.
 - Generous vertical whitespace; Notes line is two underscored blanks per item, minimum.
 - No truncation by default. ECHO listed exhaustively; STALE/ZOMBIE may be capped at 100 with the cap noted.
+
+### Then re-author and re-render the ballot
+
+The v2 ledger re-numbers items, so the old `ballot_curation.json` is invalid by
+construction. Author `ballot_curation_v2.json` in the same dated directory,
+mapping EVERY v2 ledger item exactly once (big rock / project group / auto-KILL
+strip / ledger-only), following the curation rules in PROMPT.md's "The ballot"
+section — rocks ordered by stake, one physical line per sub-item, group-mark
+precedence, no fabricated ages. Render:
+
+`~/venv/default/bin/python <skill>/scripts/render_ballot.py <ledger_v2.md> <ballot_v2.html> <ballot_v2.pdf> --curation <ballot_curation_v2.json>`
+
+and print duplex via shim-api `/print`. The ≤8-page budget and the 07-11
+content rules (no open questions; active projects' loops not enumerated; music
+as current-lesson list; kids-Minecraft invisible) bind the v2 ballot exactly as
+they bind a first-pass ballot.
 
 ### Document structure
 
@@ -179,16 +204,16 @@ Print constraints, identical to the first-pass sweep:
 ## Section 10 — Contradictions
 [New. One line each.]
 
-## Section 11 — One question to sit with
-[Inherited or rewritten. The corpus often asks a different question after reorganization than before. Trust the new question if so. The single best signal you've found a better question: the reorganization named a previously-fragmented thread, and the question now points at the act-vs-author tension instead of the prioritize-among-many tension.]
+## Section 11 — One claim to push against
+[Inherited or rewritten as a DECLARATIVE claim — never an open question (banned by the 07-11 content rules). The corpus often supports a different claim after reorganization than before. Trust the new claim if so. The single best signal you've found a better one: the reorganization named a previously-fragmented thread, and the claim now points at the act-vs-author tension instead of the prioritize-among-many tension.]
 ```
 
 ## After saving
 
-Append a one-line entry to `/Users/dad/Documents/sandbox/projects/claude_skills/reaper/RUN_LOG.md`:
+Append a one-line entry to `/Users/dad/Documents/sandbox/backstairs/reaper/RUN_LOG.md`:
 
 ```
-<today's date> | v2 reorganization of <original filename> | <new filename>
+<today's date> | v2 reorganization of <original filename> | <new ledger filename> | <new ballot pdf>
 ```
 
 ## Constraints — non-negotiable
@@ -202,3 +227,4 @@ Append a one-line entry to `/Users/dad/Documents/sandbox/projects/claude_skills/
 ---
 
 End of run instructions. Read the input, reorganize, save it, report the path. Begin now.
+

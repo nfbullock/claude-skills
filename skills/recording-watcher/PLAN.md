@@ -1,6 +1,6 @@
 ---
 status: plan
-parent: claude_skills/recording-watcher/
+parent: backstairs/recording-watcher/
 created: 2026-05-09
 ---
 
@@ -99,3 +99,4 @@ Goal: process one real audio file by hand, validate the path. No automation.
 ## Hopper section
 
 `projects/next-actions.md` gets a `## recording-watcher` section. First entry will be the Phase 1 build kickoff.
+

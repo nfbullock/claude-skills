@@ -31,7 +31,7 @@ symlink to it.
 
 ## Interactive run (Nick typed /model-check)
 
-1. `~/.claude/skills-venv/bin/python <this>/scripts/model_watcher.py --print-context`
+1. `~/venv/default/bin/python <this>/scripts/model_watcher.py --print-context`
    → JSON with `hardware`, `envelope`, per-domain `inventory`, the curated
    `domains` source list, and the last-saved `state`.
 2. For each requested domain, do the research **yourself** with WebSearch/WebFetch,
@@ -48,7 +48,9 @@ symlink to it.
 `launchctl` loads `com.bullock.model-watcher.plist`. It runs
 `model_watcher.py` with no args → loops all four domains via `claude -p` (live
 web/HF/Reddit research), saves state, and **stays silent unless something leapt**.
-On a leap it prints to the log *and* pushes Nick's phone via the push-notify skill.
+On a leap it prints to the log. (It used to also push the phone via the
+push-notify skill; that skill was ripped out 2026-07-10 — the watcher's push
+step now no-ops via its `PUSH_SEND.exists()` guard.)
 
 - Logs: `~/Library/Logs/model-watcher/launchd.{out,err}`
 - State: `~/.model_watcher/state.json` (per-domain frontier + last_run)

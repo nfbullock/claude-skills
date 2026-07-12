@@ -15,8 +15,8 @@ never model-generated. **Claude writes only the narrative** and categorizes the 
 **no local model** in this flow. Outward actions (print, Things, calendar) go through `shim-api`
 and are **confirmed with Nick before firing.**
 
-Paths: project `~/Documents/sandbox/projects/money` (run everything from here); interpreter
-`~/.claude/skills-venv/bin/python`; outside world via `pipeline/shim.py` (the studio shim-api client).
+Paths: project `~/Documents/sandbox/money` (run everything from here); interpreter
+`~/venv/default/bin/python`; outside world via `pipeline/shim.py` (the studio shim-api client).
 
 **Reference — read `research/REVIEW-REFERENCE.md` before writing the briefing.** Distilled from
 Nick's Deep Research, tailored to his profile (family of 4, Carlsbad/San Diego, ~$250k MFJ): the
@@ -33,7 +33,7 @@ If unsure, check `state/history.jsonl`; absent → bootstrap.
 
 ### 2. Run the deterministic engine (rules-only — no local model)
 ```
-~/.claude/skills-venv/bin/python -m pipeline.run <bootstrap|weekly> --source dumps --no-llm
+~/venv/default/bin/python -m pipeline.run <bootstrap|weekly> --source dumps --no-llm
 ```
 Read the **Preflight** block it prints (per-file rows · $in · $out · range):
 - If it **REFUSES** an inverted credit-card file, tell Nick to copy `accounts.yaml.template` →
@@ -70,7 +70,7 @@ Save the briefing to `reports/briefing.md`.
 
 ### 5. Render the sheet
 ```
-~/.claude/skills-venv/bin/python -m pipeline.run <mode> --source dumps --no-llm --briefing reports/briefing.md
+~/venv/default/bin/python -m pipeline.run <mode> --source dumps --no-llm --briefing reports/briefing.md
 ```
 Writes the HTML and a printable **PDF** (with a Target/Δ column if `targets.yaml` exists).
 
@@ -108,3 +108,4 @@ Then append a one-line entry to `log.md` (and `weekly.md` for weekly runs).
 - See `RUNBOOK.md` for the first-real-run checklist. Prompts live in `prompts/review/` (conversation)
   and `prompts/service/` (tuning the tool); the completed Deep Research that fed
   `research/REVIEW-REFERENCE.md` is archived raw in `research/raw/`.
+

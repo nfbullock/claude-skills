@@ -8,19 +8,24 @@ pre-creating the paired .response.md stub so Nick never has to name a file.
 
 Stdlib only. Run via ~/venv/default/bin/python.
 
-Two-stage layout:
+Two-stage layout (LAYOUT=B, canonical 2026-07-12 — the stem never changes;
+staging and final share the {project}-{NN}-{slug} name):
   research/requested/                   — flat staging dir, all pending prompts
     {project}-{NN}-{slug}.prompt.md       self-describing: project visible at a glance
     {project}-{NN}-{slug}.response.md     stub until Nick pastes the Gemini output
 
-  research/<bucket>/                    — final: project prefix stripped on ingest
-    {NN}-{slug}.prompt.md
-    {NN}-{slug}.response.md
+  research/prompts/<bucket>/            — final: pair moved here on ingest, prefix kept
+    {bucket}-{NN}-{slug}.prompt.md
+    {bucket}-{NN}-{slug}.response.md
     <arc-dir>/                            full arcs live alongside prompt files
 
-  research/adhoc/<topic>/               — final for ad-hoc topics
-    {NN}-{slug}.prompt.md
-    {NN}-{slug}.response.md
+  research/adhoc/<topic>/               — final for ad-hoc topics, prefix kept
+    {topic}-{NN}-{slug}.prompt.md         (pre-2026-07-12 pairs are bare NN-{slug};
+    {topic}-{NN}-{slug}.response.md        numbering tolerates both)
+
+  research/prompts/<parent>/<subtopic>/ — bucket with subtopic subfolders
+    {subtopic}-{NN}-{slug}.prompt.md      (subtopic is the routing key; see
+    {subtopic}-{NN}-{slug}.response.md     SUBTOPIC_BUCKETS, e.g. dx/code-review-bottleneck)
 
 Commands:
   resolve [cwd]                 Print the project/bucket name implied by cwd (empty if none).
@@ -28,7 +33,7 @@ Commands:
                                 Prints two lines: the .prompt.md path, then .response.md path.
   outstanding [project]         List pending prompts in requested/ (optional project filter).
   complete <project> <stem>     Move a filled pair from requested/ to the final bucket,
-                                stripping the project prefix. Prints the two final paths.
+                                keeping the full stem. Prints the two final paths.
 """
 from __future__ import annotations
 
@@ -37,16 +42,30 @@ import shutil
 import sys
 from pathlib import Path
 
-PROJECTS_ROOT = Path("/Users/dad/Documents/sandbox/projects")
+PROJECTS_ROOT = Path("/Users/dad/Documents/sandbox")
 RESEARCH_ROOT = PROJECTS_ROOT / "research"
 REQUESTED = RESEARCH_ROOT / "requested"
+PROMPTS_ROOT = RESEARCH_ROOT / "prompts"
 
-# Projects with a dedicated research bucket at research/<name>/.
+# Projects with a dedicated research bucket at research/prompts/<name>/.
 # Add an entry here when a project's research graduates from adhoc.
 PROJECT_BUCKETS = {
     "music",
     "life-story",
     "food",
+    "dahlias-laptop",
+    "dx",
+    "kids-skills",
+    "reading",
+    "health",
+}
+
+# Buckets organised into subtopic subfolders: research/prompts/<parent>/<subtopic>/.
+# The subtopic slug is the routing key passed to new/complete/outstanding,
+# so each subtopic gets its own NN numbering and its own synthesis.
+SUBTOPIC_BUCKETS = {
+    "code-review-bottleneck": "dx",
+    "team-memory": "dx",
 }
 
 # Normalise cwd-resolved project names to their bucket slug.
@@ -64,8 +83,10 @@ def stub_text(project: str, stem: str) -> str:
 
 def get_final_dir(project: str) -> Path:
     bucket = BUCKET_ALIASES.get(project, project)
+    if bucket in SUBTOPIC_BUCKETS:
+        return PROMPTS_ROOT / SUBTOPIC_BUCKETS[bucket] / bucket
     if bucket in PROJECT_BUCKETS:
-        return RESEARCH_ROOT / bucket
+        return PROMPTS_ROOT / bucket
     return RESEARCH_ROOT / "adhoc" / bucket
 
 
@@ -88,18 +109,18 @@ def _next_nn(project: str) -> str:
     """Allocate next NN across requested/ and the final bucket for this project."""
     bucket = BUCKET_ALIASES.get(project, project)
     nums = []
-    # Scan requested/ for {project}-NN- prefixed files
     if REQUESTED.exists():
         pattern = re.compile(rf"^{re.escape(bucket)}-(\d+)-")
         for f in REQUESTED.glob(f"{bucket}-*.prompt.md"):
             m = pattern.match(f.name)
             if m:
                 nums.append(int(m.group(1)))
-    # Scan final bucket for NN- prefixed files
     final_dir = get_final_dir(project)
     if final_dir.exists():
+        # Tolerate both prefixed stems and legacy bare NN- stems.
+        pattern = re.compile(rf"^(?:{re.escape(bucket)}-)?(\d+)-")
         for f in final_dir.glob("*.prompt.md"):
-            m = re.match(r"^(\d+)-", f.name)
+            m = pattern.match(f.name)
             if m:
                 nums.append(int(m.group(1)))
     nxt = (max(nums) + 1) if nums else 1
@@ -121,16 +142,12 @@ def new(project: str, slug: str) -> None:
 
 
 def complete(project: str, stem: str) -> None:
-    """Move filled pair from requested/ to final bucket, stripping project prefix."""
-    bucket = BUCKET_ALIASES.get(project, project)
-    # Strip "{bucket}-" prefix to get the bare stem for the final bucket
-    prefix = f"{bucket}-"
-    bare_stem = stem[len(prefix):] if stem.startswith(prefix) else stem
+    """Move filled pair from requested/ to the final bucket, keeping the stem."""
     final_dir = get_final_dir(project)
     final_dir.mkdir(parents=True, exist_ok=True)
     for ext in (".prompt.md", ".response.md"):
         src = REQUESTED / f"{stem}{ext}"
-        dst = final_dir / f"{bare_stem}{ext}"
+        dst = final_dir / f"{stem}{ext}"
         if not src.exists():
             print(f"warning: {src} not found, skipping", file=sys.stderr)
             continue
@@ -138,14 +155,25 @@ def complete(project: str, stem: str) -> None:
         print(dst)
 
 
+def _stem_project(name: str) -> str:
+    known = sorted(
+        PROJECT_BUCKETS | set(SUBTOPIC_BUCKETS) | set(BUCKET_ALIASES),
+        key=len,
+        reverse=True,
+    )
+    for key in known:
+        if name.startswith(f"{key}-"):
+            return key
+    m = re.match(r"^([^-]+(?:-[^-]+)?)-(\d+)-", name)
+    return m.group(1) if m else "unknown"
+
+
 def outstanding(project: str | None) -> None:
     if not REQUESTED.exists():
         return
     bucket_filter = BUCKET_ALIASES.get(project, project) if project else None
     for prompt in sorted(REQUESTED.glob("*.prompt.md")):
-        # Extract project from filename: {project}-{NN}-{slug}.prompt.md
-        m = re.match(r"^([^-]+(?:-[^-]+)?)-(\d+)-", prompt.name)
-        file_project = m.group(1) if m else "unknown"
+        file_project = _stem_project(prompt.name)
         if bucket_filter and file_project != bucket_filter:
             continue
         response = prompt.with_suffix("").with_suffix(".response.md")

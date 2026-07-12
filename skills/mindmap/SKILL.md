@@ -33,3 +33,4 @@ A typical workflow chains forward: mindmap photo → mindmap skill → markdown 
 - Define the output filename convention. `<YYYY-MM-DD>.md` works if Nick draws ≤1 mindmap per day; otherwise add a slug suffix.
 - Write the first real invocation against a fresh photo. Confirm output matches the 2026-05-01 reference shape.
 - Replace this stub SKILL.md with the real one. Update the description to drop the "Currently a stub" sentence.
+

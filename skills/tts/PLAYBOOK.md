@@ -122,7 +122,7 @@ The renderer never reads Markdown directly. The JSON is the contract. This means
 Reference: `/Users/dad/src/viasat/flex/audio_build/render_vibevoice_perturn.py`.
 
 ```bash
-~/.claude/skills-venv/bin/python render_vibevoice_perturn.py \
+~/venv/tts/bin/python render_vibevoice_perturn.py \
     --turns build/episode.turns.json \
     --voice HOST=en-Mike_man \
     --voice GUEST=en-Carter_man \
